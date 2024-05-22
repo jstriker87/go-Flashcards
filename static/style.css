@@ -30,6 +30,22 @@ p.flashcard {
   font-family:Verdana;
 }
 
+.restart-button{
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: fixed;
+  top: 70%;
+  left:40%;
+  height:50px;
+  width:250px;
+  background-color:#45f542;
+  color:#FFFFFF;
+  text-align:center;
+  font-weight: bold;
+  font-family:Verdana;
+}
+
 .ok-button:hover {
   background-color: #3ae031; /* Slightly darker green */
   border-color: #2cbd2a; /* Slightly darker border */
