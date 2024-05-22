@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/script.js"></script>
+</head>
+<body>
+<p class="flashcard">{{.Flashcard.Question}}</p>
+    <button type="button" class="ok-button" onclick="window.location.href='/results'">OK</button>
+<button type="button" class="revision-button" onclick="playMusic('/static/wrong.mp3')">Needs Revision</button>
+</body>
+</html>
