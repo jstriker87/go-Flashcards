@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-<link rel="stylesheet" href="/static/style.css">
-<script src="/static/script.js"></script>
-</head>
+    <head>
+        <link rel="stylesheet" href="/static/style.css">
+        <script src="/static/script.js"></script>
+    </head>
 <body>
-<h1>End</h1>
-</body>
+    <p class="flashcard">You have {{.Flashcard}} question(s) that you were unsure of. Do you want to replay them?</p>
+    <button type="button" class="ok-button" onclick="window.location.href='/restart'">Exit</button>
+    <button type="button" class="revision-button" onclick="window.location.href='/restart'">Exit</button>
+        
+    </body>
 </html>

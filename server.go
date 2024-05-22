@@ -1,9 +1,11 @@
-package main
+package main 
 
-import (
+
+import ( 
+    "fmt"
+	"html/template"
 	"log"
 	"net/http"
-	"html/template"
 )
 
 type Flashcards struct {
@@ -12,6 +14,7 @@ type Flashcards struct {
 }
 
 var flashcardCount = 0
+var flashcardOk = true
 var flashcards = []Flashcards{
     {"What is the capital of England", "London"},
     {"What is the capital of Scotland", "Edinburgh"},
@@ -36,6 +39,8 @@ func flashcardResult (w http.ResponseWriter, r *http.Request) {
 func checkFlashcards (w http.ResponseWriter, r *http.Request) {
         if flashcardCount < len(flashcards){
         flashTemplate := template.Must(template.ParseFiles("index.html"))
+        flashcards = append(flashcards[:flashcardCount], flashcards[flashcardCount+1:]...)
+        fmt.Println(flashcards)
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
         }
@@ -47,10 +52,25 @@ func checkFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 }
 
+func updateFlashcards (w http.ResponseWriter, r *http.Request) {
+    http.Redirect(w, r, "/results", http.StatusSeeOther)
+    }
+func resetFlashcards (w http.ResponseWriter, r *http.Request) {
+    fmt.Println("beep")
+    flashcardCount = 0
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+    }
+
 
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
+        fmt.Printf("The flashcard count is %d \n",flashcardCount)
         flashTemplate := template.Must(template.ParseFiles("end.html"))
-        data:=-1
+            data := map[string]int{
+            "Flashcard": len(flashcards),
+        }
+        
+        flashcardCount = 0
+        fmt.Printf("The updated flashcard count is %d \n",flashcardCount)
         if err := flashTemplate.Execute(w, data); err != nil {
             log.Println("Error executing template:", err)
         }
@@ -62,6 +82,8 @@ func main() {
     http.Handle("/static/", http.StripPrefix("/static/", fileServer))
     http.HandleFunc("/", checkFlashcards)
     http.HandleFunc("/results", flashcardResult)
+    http.HandleFunc("/update", updateFlashcards)
+    http.HandleFunc("/restart", resetFlashcards)
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":8000", nil))
 }
