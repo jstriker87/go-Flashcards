@@ -29,14 +29,33 @@ p.flashcard {
   font-weight: bold;
   font-family:Verdana;
 }
+.questions-button{
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: fixed;
+  top: 80%;
+  left:37%;
+  height:50px;
+  width:250px;
+  background-color:#bfbc0b;
+  color:#FFFFFF;
+  text-align:center;
+  font-weight: bold;
+  font-family:Verdana;
+}
+.questions-button:hover {
+    background-color: #f2ef55; 
+    border-color: #bfbc0b;
+}
 
-.restart-button{
+.start-button{
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
   position: fixed;
   top: 70%;
-  left:40%;
+  left:37%;
   height:50px;
   width:250px;
   background-color:#45f542;
@@ -46,9 +65,9 @@ p.flashcard {
   font-family:Verdana;
 }
 
-.ok-button:hover {
-  background-color: #3ae031; /* Slightly darker green */
-  border-color: #2cbd2a; /* Slightly darker border */
+.start-button:hover {
+  background-color: #3ae031; 
+  border-color: #2cbd2a; 
 }
 
 .revision-button{
@@ -60,11 +79,37 @@ top: 70%;
 left:70%;
 height:50px;
 width:250px;
-background-color:#f51f07;
+background-color:#ed7c72;
 color:#FFFFFF;
 text-align:center;
 font-weight: bold;
 font-family:Verdana;
+}
+
+.revision-button:hover {
+    background-color: #ed1602; 
+    border-color: #ed1604; 
+}
+
+.results-button{
+border: 2px solid #ebebfa;
+border-radius: 12px;
+padding: 5px;
+position: fixed;
+top: 70%;
+left:37%;
+height:50px;
+width:250px;
+background-color:#bfbc0b;
+color:#FFFFFF;
+text-align:center;
+font-weight: bold;
+font-family:Verdana;
+}
+
+.results-button:hover {
+    background-color: #f2ef55; 
+    border-color: #bfbc0b;
 }
 
 
@@ -74,7 +119,7 @@ font-family:Verdana;
   padding: 5px;
   position: fixed;
   top: 70%;
-  left:40%;
+  left:37%;
   height:50px;
   width:250px;
   background-color:#45f542;
@@ -84,7 +129,3 @@ font-family:Verdana;
   font-family:Verdana;
 }
 
-.revision-button:hover {
-  background-color: #d41b05; 
-  border-color: #b41704; 
-}
