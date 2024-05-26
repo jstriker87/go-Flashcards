@@ -64,7 +64,20 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
             log.Println("Error executing template:", err)
         }
     }
+
+
 func addQuestions(w http.ResponseWriter, r *http.Request) {
+
+        flashTemplate := template.Must(template.ParseFiles("add.html"))
+        data := map[string]int{
+            "Flashcard": 0,
+        }
+        if err := flashTemplate.Execute(w, data); err != nil {
+            log.Println("Error executing template:", err)
+        }
+    }
+
+func submitQuestions(w http.ResponseWriter, r *http.Request) {
 
         flashTemplate := template.Must(template.ParseFiles("add.html"))
         data := map[string]int{
@@ -154,6 +167,8 @@ func main() {
     http.HandleFunc("/ok", questionOK)
     http.HandleFunc("/answer", showAnswer)
     http.HandleFunc("/restart", restart)
+    http.HandleFunc("/addQuestion", addQuestions)
+    http.HandleFunc("/submitQuestion", submitQuestions)
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":8000", nil))
 }
