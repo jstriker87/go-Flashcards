@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"html/template"
 	"log"
 	"net/http"
-	"html/template"
-    "runtime"
-    "os/exec"
-
+	"os/exec"
+	"runtime"
+	"strconv"
 )
 
 type Flashcards struct {
@@ -14,16 +15,8 @@ type Flashcards struct {
     Answer   string
 }
 
-type ContactDetails struct {
-    Email   string
-    Subject string
-    Message string
-}
-var needsRevision = false
 var flashcardCount = 0
 var flashcards = []Flashcards{
-    {"What is the capital of England", "London"},
-    {"What is the capital of Scotland", "Edinburgh"},
 }
 
 func showAnswer(w http.ResponseWriter, r *http.Request) {
@@ -39,8 +32,8 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
-        //fmt.Printf("The flashcard count is %d \n",len(flashcards))
-        //fmt.Printf("The flashcardCount  count is %d \n",flashcardCount)
+        fmt.Printf("The flashcard count is %d \n",len(flashcards))
+        fmt.Printf("The flashcardCount  count is %d \n",flashcardCount)
         if flashcardCount < len(flashcards){
         flashTemplate := template.Must(template.ParseFiles("questions.html"))
         data := map[string]Flashcards{
@@ -65,32 +58,7 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
         }
     }
 
-
-func addQuestions(w http.ResponseWriter, r *http.Request) {
-
-        flashTemplate := template.Must(template.ParseFiles("add.html"))
-        data := map[string]int{
-            "Flashcard": 0,
-        }
-        if err := flashTemplate.Execute(w, data); err != nil {
-            log.Println("Error executing template:", err)
-        }
-    }
-
-func submitQuestions(w http.ResponseWriter, r *http.Request) {
-
-        flashTemplate := template.Must(template.ParseFiles("add.html"))
-        data := map[string]int{
-            "Flashcard": 0,
-        }
-        if err := flashTemplate.Execute(w, data); err != nil {
-            log.Println("Error executing template:", err)
-        }
-    }
-
-
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
-    flashcardCount++
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
@@ -124,18 +92,6 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
         if err := flashTemplate.Execute(w, data); err != nil {
             log.Println("Error executing template:", err)
         }
-    }
-
-func addPartTwo(w http.ResponseWriter, r *http.Request) {
-    if r.Method == "GET" {
-        t, _ := template.ParseFiles("add.html")
-        t.Execute(w, nil)
-    } else {
-        //result:= r.ParseForm()
-        //newFlashcard := Flashcards{result,result}
-        //flashcards = append(flashcards, newFlashcard)
-//        fmt.Println(flashcards)
-    }
 }
 
 func openServerWebpage(url string) error {
@@ -154,21 +110,50 @@ func openServerWebpage(url string) error {
     return exec.Command(cmd, args...).Start()
 }
 
+func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
+
+        flashTemplate := template.Must(template.ParseFiles("add.html"))
+        data := map[string]int{
+            "Flashcard": 0,
+        }
+        if err := flashTemplate.Execute(w, data); err != nil {
+            log.Println("Error executing template:", err)
+        }
+    }
+
+
+func submitQuestions(w http.ResponseWriter, r *http.Request) {
+    if r.Method == "GET" {
+        t, _ := template.ParseFiles("add.html")
+        t.Execute(w, nil)
+    } else {
+        r.ParseForm()
+        for i := 1; i < 10; i++ {
+            question:=r.FormValue("question"+strconv.Itoa(i))
+            answer:=r.FormValue("answer"+strconv.Itoa(i))
+            if question == "" || answer == "" {
+			    continue
+		    }
+            flashcard := Flashcards{Question: question, Answer: answer}
+		    flashcards = append(flashcards, flashcard)
+        }
+        fmt.Println(flashcards) 
+    }
+}
+
 func main() {
 
     openServerWebpage("http://localhost:8000")
     fileServer := http.FileServer(http.Dir("./static"))
     http.Handle("/static/", http.StripPrefix("/static/", fileServer))
     http.HandleFunc("/", startFlashcards)
-    http.HandleFunc("/show",addPartTwo) 
     http.HandleFunc("/question", showQuestion)
-    http.HandleFunc("/add", addQuestions)
     http.HandleFunc("/needsRevision", questionNeedsRevision)
     http.HandleFunc("/ok", questionOK)
     http.HandleFunc("/answer", showAnswer)
     http.HandleFunc("/restart", restart)
-    http.HandleFunc("/addQuestion", addQuestions)
-    http.HandleFunc("/submitQuestion", submitQuestions)
+        http.HandleFunc("/submitaddquestions", submitQuestions)
+    http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":8000", nil))
 }
