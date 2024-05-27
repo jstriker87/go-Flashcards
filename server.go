@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -45,7 +46,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
-
+        fmt.Println("Starting server on http://localhost:8000")
         flashTemplate := template.Must(template.ParseFiles("index.html"))
         data := map[string]int{
             "flashcardsnum": len(flashcards),
@@ -138,7 +139,6 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
     openServerWebpage("http://localhost:8000")
     fileServer := http.FileServer(http.Dir("./static"))
     http.Handle("/static/", http.StripPrefix("/static/", fileServer))
@@ -148,7 +148,7 @@ func main() {
     http.HandleFunc("/ok", questionOK)
     http.HandleFunc("/answer", showAnswer)
     http.HandleFunc("/restart", restart)
-        http.HandleFunc("/submitaddquestions", submitQuestions)
+    http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":8000", nil))
