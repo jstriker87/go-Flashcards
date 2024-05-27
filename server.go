@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -32,8 +31,6 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
-        fmt.Printf("The flashcard count is %d \n",len(flashcards))
-        fmt.Printf("The flashcardCount  count is %d \n",flashcardCount)
         if flashcardCount < len(flashcards){
         flashTemplate := template.Must(template.ParseFiles("questions.html"))
         data := map[string]Flashcards{
@@ -60,13 +57,13 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
     http.Redirect(w, r, "/question", http.StatusSeeOther)
+    flashcardCount++
 
 }
 
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
     flashcards = append(flashcards[:flashcardCount], flashcards[flashcardCount+1:]...) 
-    flashcardCount++
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
@@ -112,7 +109,7 @@ func openServerWebpage(url string) error {
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
 
-        flashTemplate := template.Must(template.ParseFiles("add.html"))
+        flashTemplate := template.Must(template.ParseFiles("addquestions.html"))
         data := map[string]int{
             "Flashcard": 0,
         }
@@ -124,7 +121,7 @@ func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
 
 func submitQuestions(w http.ResponseWriter, r *http.Request) {
     if r.Method == "GET" {
-        t, _ := template.ParseFiles("add.html")
+        t, _ := template.ParseFiles("addquestions.html")
         t.Execute(w, nil)
     } else {
         r.ParseForm()
@@ -137,7 +134,7 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
             flashcard := Flashcards{Question: question, Answer: answer}
 		    flashcards = append(flashcards, flashcard)
         }
-        fmt.Println(flashcards) 
+        http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
 
