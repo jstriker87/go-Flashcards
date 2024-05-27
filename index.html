@@ -5,7 +5,11 @@
 <script src="/static/script.js"></script>
 </head>
 <body>
-<p class="flashcard">Welcome to Flashcards</p>
+<div class="flashcard">Welcome to Flashcards
+{{if eq .flashcardsnum 0}}
+        <p>You currently have no questions. Please add questions before pressing start</p>
+{{end}}
+</div>
     <button type="button" class="start-button" onclick="window.location.href='/question'">Start</button>
     <button type="button" class="questions-button" onclick="window.location.href='/addquestions'">Add Questions</button>
 </body>

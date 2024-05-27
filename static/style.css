@@ -1,4 +1,4 @@
-p.flashcard {
+.flashcard {
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
@@ -129,31 +129,26 @@ font-family:Verdana;
   font-family:Verdana;
 }
 
-.questions-answers {
-    overflow: auto;
-    width: 100%;
-}
 
 .questions-answers table {
+    margin-left: auto;
+    margin-right:auto;
     border: 1px solid #dededf;
-    height: 100%;
-    width: 100%;
+    width: 50%;
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 1px;
     text-align: left;
 }
 
-.questions-answers caption {
-    caption-side: top;
-    text-align: left;
-}
 
 .questions-answers th {
     border: 1px solid #dededf;
     background-color: #eceff1;
     color: #000000;
     padding: 5px;
+    text-align:center;
+    font-family:Verdana;
 }
 
 .questions-answers td {
@@ -161,4 +156,6 @@ font-family:Verdana;
     background-color: #ffffff;
     color: #000000;
     padding: 5px;
+    text-align:center;
+    font-family:Verdana;
 }
