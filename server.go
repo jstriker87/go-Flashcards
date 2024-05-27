@@ -48,7 +48,7 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
 
         flashTemplate := template.Must(template.ParseFiles("index.html"))
         data := map[string]int{
-            "Flashcard": 0,
+            "flashcardsnum": len(flashcards),
         }
         if err := flashTemplate.Execute(w, data); err != nil {
             log.Println("Error executing template:", err)
@@ -117,7 +117,6 @@ func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
             log.Println("Error executing template:", err)
         }
     }
-
 
 func submitQuestions(w http.ResponseWriter, r *http.Request) {
     if r.Method == "GET" {
