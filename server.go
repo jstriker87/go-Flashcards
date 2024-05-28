@@ -5,8 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"os/exec"
-	"runtime"
 	"strconv"
 )
 
@@ -48,11 +46,6 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
-        if runCount < 1 {
-
-            fmt.Println("Starting server on http://localhost:8000")
-
-        }
         runCount++
         flashTemplate := template.Must(template.ParseFiles("index.html"))
         data := map[string]int{
@@ -99,21 +92,6 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
         }
 }
 
-func openServerWebpage(url string) error {
-    var cmd string
-    var args []string
-    switch runtime.GOOS {
-    case "windows":
-        cmd = "cmd"
-        args = []string{"/c", "start"}
-    case "darwin":
-        cmd = "open"
-    default: // "linux", "freebsd", "openbsd", "netbsd"
-        cmd = "xdg-open"
-    }
-    args = append(args, url)
-    return exec.Command(cmd, args...).Start()
-}
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
         runCount++
@@ -146,7 +124,11 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    openServerWebpage("http://localhost:8000")
+    if runCount < 1 {
+
+        fmt.Println("Starting Flashcards. Open your web browser and navigate to http://localhost:8000")
+
+    }
     fileServer := http.FileServer(http.Dir("./static"))
     http.Handle("/static/", http.StripPrefix("/static/", fileServer))
     http.HandleFunc("/", startFlashcards)

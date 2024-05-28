@@ -26,7 +26,7 @@
 ### Executing program
 * For Windows 
     * Run the executable 
-    * The webpage http://localhost:8000 should automatically be displayed, but if it doesn't then go to the webpage 
+    * Open your web browser and go to http://localhost:8000
     * You may receive a warning to advise that the firewall needs permission to run the program. If you receive this message then press accept 
 * For Linux / Mac 
     * Navigate to the folder where the executable is located
