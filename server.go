@@ -18,7 +18,8 @@ type Flashcards struct {
 var flashcardCount = 0
 var flashcards = []Flashcards{
 }
-
+var version = 1.0   
+var runCount = 0
 func showAnswer(w http.ResponseWriter, r *http.Request) {
         flashTemplate := template.Must(template.ParseFiles("answer.html"))
         data := map[string]Flashcards{
@@ -32,6 +33,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
+        runCount++
         if flashcardCount < len(flashcards){
         flashTemplate := template.Must(template.ParseFiles("questions.html"))
         data := map[string]Flashcards{
@@ -46,7 +48,12 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
-        fmt.Println("Starting server on http://localhost:8000")
+        if runCount < 1 {
+
+            fmt.Println("Starting server on http://localhost:8000")
+
+        }
+        runCount++
         flashTemplate := template.Must(template.ParseFiles("index.html"))
         data := map[string]int{
             "flashcardsnum": len(flashcards),
@@ -109,7 +116,7 @@ func openServerWebpage(url string) error {
 }
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
-
+        runCount++
         flashTemplate := template.Must(template.ParseFiles("addquestions.html"))
         data := map[string]int{
             "Flashcard": 0,
