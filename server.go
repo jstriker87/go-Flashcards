@@ -8,7 +8,8 @@ import (
 	"strconv"
     "embed"
 )
-var content embed.FS
+//go:embed html/*
+var html embed.FS
 type Flashcards struct {
     Question string
     Answer   string
@@ -20,7 +21,7 @@ var flashcards = []Flashcards{
 var version = 1.0   
 var runCount = 0
 func showAnswer(w http.ResponseWriter, r *http.Request) {
-        flashTemplate := template.Must(template.ParseFiles("./html/answer.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/answer.html"))
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
 
@@ -34,7 +35,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 func showQuestion(w http.ResponseWriter, r *http.Request) {
         runCount++
         if flashcardCount < len(flashcards){
-        flashTemplate := template.Must(template.ParseFiles("./html/questions.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/questions.html"))
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
         }
@@ -48,7 +49,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
         runCount++
-        flashTemplate := template.Must(template.ParseFiles("./html/index.html"))
+        flashTemplate := template.Must(template.ParseFiles("/html/index.html"))
         data := map[string]int{
             "flashcardsnum": len(flashcards),
         }
@@ -83,7 +84,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 
 
     }
-        flashTemplate := template.Must(template.ParseFiles("./html/end.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/end.html"))
             data := map[string]int{
             "Flashcard": len(flashcards),
         }
@@ -96,7 +97,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
         runCount++
-        flashTemplate := template.Must(template.ParseFiles("./html/addquestions.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/addquestions.html"))
         data := map[string]int{
             "Flashcard": 0,
         }
@@ -107,7 +108,7 @@ func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
 
 func submitQuestions(w http.ResponseWriter, r *http.Request) {
     if r.Method == "GET" {
-        t, _ := template.ParseFiles("addquestions.html")
+        t, _ := template.ParseFiles("html/addquestions.html")
         t.Execute(w, nil)
     } else {
         r.ParseForm()
@@ -130,8 +131,8 @@ func main() {
         fmt.Println("Starting Flashcards. Open your web browser and navigate to http://localhost:8000")
 
     }
-    http.Handle("/static/", http.FileServer(http.FS(content)))
-    http.Handle("/html/", http.FileServer(http.FS(content)))
+    http.Handle("/html/", http.StripPrefix("/html/", http.FileServer(http.FS(html))))
+    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
     http.HandleFunc("/", startFlashcards)
     http.HandleFunc("/question", showQuestion)
     http.HandleFunc("/needsRevision", questionNeedsRevision)
