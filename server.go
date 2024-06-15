@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os/exec"
+	"runtime"
 	"strconv"
     "embed"
 )
@@ -48,6 +50,11 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
+        if runCount < 1 {
+
+            fmt.Println("Starting server on http://localhost:8000")
+
+        }
         runCount++
         flashTemplate := template.Must(template.ParseFiles("/html/index.html"))
         data := map[string]int{
@@ -94,6 +101,21 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
         }
 }
 
+func openServerWebpage(url string) error {
+    var cmd string
+    var args []string
+    switch runtime.GOOS {
+    case "windows":
+        cmd = "cmd"
+        args = []string{"/c", "start"}
+    case "darwin":
+        cmd = "open"
+    default: // "linux", "freebsd", "openbsd", "netbsd"
+        cmd = "xdg-open"
+    }
+    args = append(args, url)
+    return exec.Command(cmd, args...).Start()
+}
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
         runCount++
@@ -126,6 +148,7 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+<<<<<<< HEAD
     if runCount < 1 {
 
         fmt.Println("Starting Flashcards. Open your web browser and navigate to http://localhost:8000")
@@ -133,6 +156,11 @@ func main() {
     }
     http.Handle("/html/", http.StripPrefix("/html/", http.FileServer(http.FS(html))))
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+=======
+    openServerWebpage("http://localhost:8000")
+    fileServer := http.FileServer(http.Dir("./static"))
+    http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+>>>>>>> parent of 687fe80 (Removed automatic opening of web browser)
     http.HandleFunc("/", startFlashcards)
     http.HandleFunc("/question", showQuestion)
     http.HandleFunc("/needsRevision", questionNeedsRevision)
