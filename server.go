@@ -6,17 +6,28 @@ import (
     "log"
     "html/template"
     "strconv"
+    "embed"
 )
 type Flashcards struct {
     Question string
     Answer   string
 }
 
+//go:embed templates/*.html
+var templatesFS embed.FS
+
+//go:embed static
+var staticFS embed.FS
+
 var flashcardCount = 0
 var flashcards = []Flashcards{
 }
 var version = 1.0   
 var runCount = 0
+
+func parseTemplate(filename string) *template.Template {
+    return template.Must(template.ParseFS(templatesFS, "templates/"+filename))
+}
 
 func showAnswer(w http.ResponseWriter, r *http.Request) {
         flashTemplate := template.Must(template.ParseFiles("answer.html"))
@@ -52,7 +63,7 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
 
         }
         runCount++
-        flashTemplate := template.Must(template.ParseFiles("index.html"))
+        flashTemplate := parseTemplate("index.html")
         data := map[string]int{
             "flashcardsnum": len(flashcards),
         }
@@ -128,7 +139,8 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+    fs := http.FS(staticFS)
+    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(fs)))
     http.HandleFunc("/", startFlashcards)
     http.HandleFunc("/question", showQuestion)
     http.HandleFunc("/needsRevision", questionNeedsRevision)
