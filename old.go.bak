@@ -2,11 +2,16 @@ package main
 
 import (
     "fmt"
-    "net/http"
-    "log"
-    "html/template"
-    "strconv"
+	"html/template"
+	"log"
+	"net/http"
+	"os/exec"
+	"runtime"
+	"strconv"
+    "embed"
 )
+//go:embed html/*
+var html embed.FS
 type Flashcards struct {
     Question string
     Answer   string
@@ -17,9 +22,8 @@ var flashcards = []Flashcards{
 }
 var version = 1.0   
 var runCount = 0
-
 func showAnswer(w http.ResponseWriter, r *http.Request) {
-        flashTemplate := template.Must(template.ParseFiles("answer.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/answer.html"))
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
 
@@ -33,7 +37,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 func showQuestion(w http.ResponseWriter, r *http.Request) {
         runCount++
         if flashcardCount < len(flashcards){
-        flashTemplate := template.Must(template.ParseFiles("questions.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/questions.html"))
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
         }
@@ -52,7 +56,7 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
 
         }
         runCount++
-        flashTemplate := template.Must(template.ParseFiles("index.html"))
+        flashTemplate := template.Must(template.ParseFiles("/html/index.html"))
         data := map[string]int{
             "flashcardsnum": len(flashcards),
         }
@@ -87,7 +91,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 
 
     }
-        flashTemplate := template.Must(template.ParseFiles("end.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/end.html"))
             data := map[string]int{
             "Flashcard": len(flashcards),
         }
@@ -97,9 +101,25 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
         }
 }
 
+func openServerWebpage(url string) error {
+    var cmd string
+    var args []string
+    switch runtime.GOOS {
+    case "windows":
+        cmd = "cmd"
+        args = []string{"/c", "start"}
+    case "darwin":
+        cmd = "open"
+    default: // "linux", "freebsd", "openbsd", "netbsd"
+        cmd = "xdg-open"
+    }
+    args = append(args, url)
+    return exec.Command(cmd, args...).Start()
+}
+
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
         runCount++
-        flashTemplate := template.Must(template.ParseFiles("addquestions.html"))
+        flashTemplate := template.Must(template.ParseFiles("html/addquestions.html"))
         data := map[string]int{
             "Flashcard": 0,
         }
@@ -110,7 +130,7 @@ func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
 
 func submitQuestions(w http.ResponseWriter, r *http.Request) {
     if r.Method == "GET" {
-        t, _ := template.ParseFiles("addquestions.html")
+        t, _ := template.ParseFiles("html/addquestions.html")
         t.Execute(w, nil)
     } else {
         r.ParseForm()
@@ -128,7 +148,16 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    if runCount < 1 {
+
+        fmt.Println("Starting Flashcards. Open your web browser and navigate to http://localhost:8000")
+
+    }
+    http.Handle("/html/", http.StripPrefix("/html/", http.FileServer(http.FS(html))))
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+    openServerWebpage("http://localhost:8000")
+    fileServer := http.FileServer(http.Dir("./static"))
+    http.Handle("/static/", http.StripPrefix("/static/", fileServer))
     http.HandleFunc("/", startFlashcards)
     http.HandleFunc("/question", showQuestion)
     http.HandleFunc("/needsRevision", questionNeedsRevision)
