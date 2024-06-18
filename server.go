@@ -7,6 +7,7 @@ import (
     "html/template"
     "strconv"
     "embed"
+    "io/fs"
 )
 type Flashcards struct {
     Question string
@@ -139,8 +140,12 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    fs := http.FS(staticFS)
-    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(fs)))
+    //fs := http.FileServer(http.FS(staticFS))
+    staticSubFS, err := fs.Sub(staticFS, "static")
+    if err != nil {
+        fmt.Println("Test")
+    }
+    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticSubFS))))
     http.HandleFunc("/", startFlashcards)
     http.HandleFunc("/question", showQuestion)
     http.HandleFunc("/needsRevision", questionNeedsRevision)
