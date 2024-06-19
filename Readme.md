@@ -20,23 +20,27 @@
 ### Installing from source
 1. Clone the repository
 2. Navigate to the repository's  directory
-3. In your command prompt or terminal type `go build Flashcards`
+3. Depending on your operating system type the command below
+    - Windows:
+        - GOOS=windows GOARCH=amd64 go build -o build/Flashcards.exe
+    - Mac:
+        - GOOS=darwin GOARCH=amd64 go build -o build/Flashcards-Mac
+    - Linux:
+        - GOOS=linux GOARCH=amd64 go build -o build/Flashcards-Linux
 4. The Executable will then be created in the current folder
-
 ### Executing program
 * For Windows 
     * Run the executable 
-    * The webpage http://localhost:8000 should automatically be displayed, but if it doesn't then go to the webpage 
+    * Navigate to http://localhost:8000
     * You may receive a warning to advise that the firewall needs permission to run the program. If you receive this message then press accept 
 * For Linux / Mac 
     * Navigate to the folder where the executable is located
-    * Execute the program by typing `./Flashcards`
-    * The webpage http://localhost:8000 should automatically be displayed, but if it doesn't then go to the webpage 
+    * Execute the program
+    * Navigate to the webpage http://localhost:8000
 ## Authors
 @Jstriker87
-
 ## Version History
-* 0.1
+* 1.0.0
     * Initial Release
 
 ## License
