@@ -31,7 +31,8 @@ func parseTemplate(filename string) *template.Template {
 }
 
 func showAnswer(w http.ResponseWriter, r *http.Request) {
-        flashTemplate := template.Must(template.ParseFiles("answer.html"))
+
+        flashTemplate := parseTemplate("answer.html")
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
 
@@ -45,7 +46,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 func showQuestion(w http.ResponseWriter, r *http.Request) {
         runCount++
         if flashcardCount < len(flashcards){
-        flashTemplate := template.Must(template.ParseFiles("questions.html"))
+        flashTemplate := parseTemplate("questions.html")
         data := map[string]Flashcards{
             "Flashcard": flashcards[flashcardCount],
         }
@@ -58,12 +59,6 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
-        if runCount < 1 {
-
-            fmt.Println("Starting server on http://localhost:8000")
-
-        }
-        runCount++
         flashTemplate := parseTemplate("index.html")
         data := map[string]int{
             "flashcardsnum": len(flashcards),
@@ -99,7 +94,9 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 
 
     }
-        flashTemplate := template.Must(template.ParseFiles("end.html"))
+        
+
+        flashTemplate:= parseTemplate("end.html")
             data := map[string]int{
             "Flashcard": len(flashcards),
         }
@@ -111,7 +108,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
         runCount++
-        flashTemplate := template.Must(template.ParseFiles("addquestions.html"))
+        flashTemplate:= parseTemplate("addquestions.html")
         data := map[string]int{
             "Flashcard": 0,
         }
@@ -140,10 +137,15 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    //fs := http.FileServer(http.FS(staticFS))
+    if runCount < 1 {
+
+        fmt.Println("Starting server on http://localhost:8000")
+
+    }
+    runCount++
     staticSubFS, err := fs.Sub(staticFS, "static")
     if err != nil {
-        fmt.Println("Test")
+        log.Fatal(err)
     }
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticSubFS))))
     http.HandleFunc("/", startFlashcards)
