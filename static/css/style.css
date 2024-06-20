@@ -29,7 +29,7 @@
   font-weight: bold;
   font-family:Verdana;
 }
-.questions-button{
+.add-questions-button{
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
@@ -44,7 +44,28 @@
   font-weight: bold;
   font-family:Verdana;
 }
-.questions-button:hover {
+
+.add-questions-button:hover {
+    background-color: #f2ef55; 
+    border-color: #bfbc0b;
+}
+.submit-questions-button{
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: absolute;
+  bottom: -50px; 
+  left: 40%;
+  height:35px;
+  width:250px;
+  background-color:#bfbc0b;
+  color:#FFFFFF;
+  text-align:center;
+  font-weight: bold;
+  font-family:Verdana;
+
+}
+.submit-questions-button:hover {
     background-color: #f2ef55; 
     border-color: #bfbc0b;
 }
