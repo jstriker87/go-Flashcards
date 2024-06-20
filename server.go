@@ -6,8 +6,10 @@ import (
     "log"
     "html/template"
     "strconv"
+    "strings"
     "embed"
     "io/fs"
+    "net"
 )
 type Flashcards struct {
     Question string
@@ -25,6 +27,7 @@ var flashcards = []Flashcards{
 }
 var version = 1.0   
 var runCount = 0
+var available = false
 
 func parseTemplate(filename string) *template.Template {
     return template.Must(template.ParseFS(templatesFS, "templates/"+filename))
@@ -135,11 +138,31 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
-
+func checkPort() int {
+	port := 8000
+	portstr := strconv.Itoa(port)
+	var l net.Listener
+	var err error
+	for available != true {
+		l, err = net.Listen("tcp", ":" + portstr)
+		if err != nil {
+			fmt.Printf("Error: %s\n", err)
+		if strings.Contains(err.Error(), "in use") {
+				port += 1
+				portstr = strconv.Itoa(port)
+			}
+		} else {
+			available = true
+		}
+	}
+	defer l.Close()
+    return port
+}
 func main() {
+    port:= checkPort()
     if runCount < 1 {
 
-        fmt.Println("Starting server on http://localhost:8000")
+        fmt.Println("Starting flashcards. Go to http://localhost:",port)
 
     }
     runCount++
@@ -157,5 +180,5 @@ func main() {
     http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/end", endFlashcards)
-    log.Fatal(http.ListenAndServe(":8000", nil))
+    log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
