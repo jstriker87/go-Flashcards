@@ -45,6 +45,20 @@
   font-family:Verdana;
 }
 
+
+.upload-questions-button{
+  position: fixed;
+  top:10%;
+  left:42%;
+  height:30px;
+  width:150px;
+  background-color:#bfbc0b;
+  color:#FFFFFF;
+  text-align:center;
+  font-weight: bold;
+  font-family:Verdana;
+}
+
 .add-questions-button:hover {
     background-color: #f2ef55; 
     border-color: #bfbc0b;

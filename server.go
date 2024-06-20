@@ -110,7 +110,6 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 }
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
-        runCount++
         flashTemplate:= parseTemplate("addquestions.html")
         data := map[string]int{
             "Flashcard": 0,
@@ -138,6 +137,18 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
+
+func uploadQuestions(w http.ResponseWriter, r *http.Request) {
+        flashTemplate:= parseTemplate("uploadquestions.html")
+        data := map[string]int{
+            "Flashcard": 0,
+        }
+        if err := flashTemplate.Execute(w, data); err != nil {
+            log.Println("Error executing template:", err)
+        }
+    }
+
+
 func checkPort() int {
 	port := 8000
 	portstr := strconv.Itoa(port)
@@ -179,6 +190,7 @@ func main() {
     http.HandleFunc("/restart", restart)
     http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
+    http.HandleFunc("/uploadquestions", uploadQuestions);
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
