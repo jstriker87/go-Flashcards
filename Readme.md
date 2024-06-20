@@ -12,8 +12,6 @@
 ### Dependencies
 * This program includes executable programs for Linux, Mac & Windows
 * If you are compiling the program from source, Golang version 1.23 is required 
-* Note that the program uses port 8000, so it must be free to be used. Future versions will check the port try the next port (8001), and continue until it finds a free port 
-
 ### Installing
 * Download the executable for the platform of your choice
 
@@ -29,17 +27,21 @@
         - GOOS=linux GOARCH=amd64 go build -o build/Flashcards-Linux
 4. The Executable will then be created in the current folder
 ### Executing program
+* Note that the program uses port 8000, however if this port is unavailable the program will check the port try the next port (8001), and continue until it finds a free port.
+* When starting the program, the terminal window will display the port that has been used (e.g http://localhost:8000)
 * For Windows 
     * Run the executable 
-    * Navigate to http://localhost:8000
+    * Navigate to to the web address displayed in the terminal
     * You may receive a warning to advise that the firewall needs permission to run the program. If you receive this message then press accept 
 * For Linux / Mac 
     * Navigate to the folder where the executable is located
     * Execute the program
-    * Navigate to the webpage http://localhost:8000
+    * Navigate to to the web address displayed in the terminal
 ## Authors
 @Jstriker87
 ## Version History
+* 1.0.1
+    * Added port checker and updated Readme
 * 1.0.0
     * Initial Release
 
