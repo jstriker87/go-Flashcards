@@ -3,11 +3,13 @@
 <head>
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/script.js"></script>
-	<title>Flashcards Revision - Upload Questions</title>
-
+    <title>Flashcards Revision - Upload Questions</title>
 </head>
 <body>
-
+    <form id="form" enctype="multipart/form-data" action="/submituploadquestions" method="POST">
+        <input class="upload-button" type="file" name="file" multiple />
+        <button class="submit-upload-button" type="submit">Submit</button>
+    </form>
 </body>
 </html>
 
