@@ -8,8 +8,10 @@ import (
     "strconv"
     "strings"
     "embed"
+    "io"
     "io/fs"
     "net"
+    "bufio"
 )
 type Flashcards struct {
     Question string
@@ -28,6 +30,51 @@ var flashcards = []Flashcards{
 var version = 1.0   
 var runCount = 0
 var available = false
+const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+    file, fileHeader, err := r.FormFile("file")
+    if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if fileHeader.Size > MAX_UPLOAD_SIZE {
+			http.Error(w, fmt.Sprintf("The uploaded image is too big: %s. Please use an image less than 1MB in size", fileHeader.Filename), http.StatusBadRequest)
+			return
+		}
+
+    scanner := bufio.NewScanner(file)
+    var lines []string
+    for scanner.Scan() {
+        text:= scanner.Text()
+        lines = append(lines,text)
+    }
+	defer file.Close()
+
+		buff := make([]byte, 512)
+		_, err = file.Read(buff)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		filetype := http.DetectContentType(buff)
+		if filetype != "application/octet-stream" {
+			http.Error(w, "The provided file format is not allowed. Please upload a text file", http.StatusBadRequest)
+			return
+		}
+
+		_, err = file.Seek(0, io.SeekStart)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+        fmt.Fprintf(w, "Upload successful")
+	}
 
 func parseTemplate(filename string) *template.Template {
     return template.Must(template.ParseFS(templatesFS, "templates/"+filename))
@@ -139,6 +186,7 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 }
 
 func uploadQuestions(w http.ResponseWriter, r *http.Request) {
+        w.Header().Add("Content-Type", "text/html")
         flashTemplate:= parseTemplate("uploadquestions.html")
         data := map[string]int{
             "Flashcard": 0,
@@ -191,6 +239,7 @@ func main() {
     http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);
+    http.HandleFunc("/submituploadquestions", uploadHandler);
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
