@@ -6,10 +6,18 @@
     <title>Flashcards Revision - Upload Questions</title>
 </head>
 <body>
-    <form id="form" enctype="multipart/form-data" action="/submituploadquestions" method="POST">
-        <input class="upload-button" type="file" name="file" multiple />
-        <button class="submit-upload-button" type="submit">Submit</button>
-    </form>
+    <div class="submit-questions">
+        <table class="submit-questions-table">
+            <tr>
+                <td>
+                        <form id="form" enctype="multipart/form-data" action="/submituploadquestions" method="POST">
+                            <input class="upload-button" type="file" name="file" multiple />
+                            <button class="submit-upload-button" type="submit">Submit</button>
+                        </form>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
 
