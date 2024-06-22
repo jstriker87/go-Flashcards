@@ -66,8 +66,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
         flashcard := Flashcards{Question: question, Answer: answer}
 		flashcards = append(flashcards, flashcard)
     } 
-
-    //fmt.Fprintf(w, "Upload successful")
     http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
