@@ -47,8 +47,8 @@
 
 
 .upload-questions-button{
-  position: fixed;
-  top:10%;
+  position: absolute;
+  top:5%;
   left:42%;
   height:30px;
   width:150px;
@@ -194,3 +194,22 @@ font-family:Verdana;
     text-align:center;
     font-family:Verdana;
 }
+
+.submit-questions {
+display: flex;
+justify-content: center;
+padding-top: 20px; /* Optional: Adds some padding from the top */
+}
+
+.submit-questions-table {
+width: 50%;
+border-collapse: collapse;
+text-align: center;
+}
+
+.submit-questions-table td {
+border: 1px solid black;
+padding: 10px;
+}
+
+

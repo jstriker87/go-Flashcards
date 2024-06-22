@@ -38,6 +38,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
     file, fileHeader, err := r.FormFile("file")
+    defer file.Close()
     if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -53,27 +54,21 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
         text:= scanner.Text()
         lines = append(lines,text)
     }
-	defer file.Close()
-
-		buff := make([]byte, 512)
-		_, err = file.Read(buff)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		filetype := http.DetectContentType(buff)
-		if filetype != "application/octet-stream" {
-			http.Error(w, "The provided file format is not allowed. Please upload a text file", http.StatusBadRequest)
-			return
-		}
-
 		_, err = file.Seek(0, io.SeekStart)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-        fmt.Fprintf(w, "Upload successful")
+    for i:=0;i<len(lines)-1;i+=2{
+        question:=lines[i]
+        answer:=lines[i+1]
+        flashcard := Flashcards{Question: question, Answer: answer}
+		flashcards = append(flashcards, flashcard)
+    } 
+
+    //fmt.Fprintf(w, "Upload successful")
+    http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
 func parseTemplate(filename string) *template.Template {
