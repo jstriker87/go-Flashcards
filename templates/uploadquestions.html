@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+    p {text-align: center;}
+    div {text-align: center;}
+</style>
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/script.js"></script>
     <title>Flashcards Revision - Upload Questions</title>
 </head>
 <body>
+        <h1 align=center>Upload a questions file</h1>` 
+        <p>The questions and answers must be on their own lines</p>
+        <p>For example</p>
+        <p>Question one</p>
+        <p>Answer one</p>
+        <br>
+
     <div class="submit-questions">
         <table class="submit-questions-table">
             <tr>
                 <td>
                         <form id="form" enctype="multipart/form-data" action="/submituploadquestions" method="POST">
-                            <input class="upload-button" type="file" name="file" multiple />
-                            <button class="submit-upload-button" type="submit">Submit</button>
+                            <input type="file" name="file" multiple />
+                            <button type="submit">Submit</button>
                         </form>
                 </td>
             </tr>
