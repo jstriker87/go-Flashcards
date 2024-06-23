@@ -47,3 +47,8 @@
 
 ## License
 This project is licensed under the MIT License.
+
+## Acknowledgements
+This project uses code licensed from the sources below
+[Google Font Roboto](https://fonts.google.com/specimen/Roboto/about)
+[File Upload code by freshman-tech](https://github.com/Freshman-tech/file-upload)
