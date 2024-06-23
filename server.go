@@ -8,8 +8,10 @@ import (
     "strconv"
     "strings"
     "embed"
+    "io"
     "io/fs"
     "net"
+    "bufio"
 )
 type Flashcards struct {
     Question string
@@ -28,6 +30,44 @@ var flashcards = []Flashcards{
 var version = 1.0   
 var runCount = 0
 var available = false
+const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+    file, fileHeader, err := r.FormFile("file")
+    defer file.Close()
+    if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if fileHeader.Size > MAX_UPLOAD_SIZE {
+			http.Error(w, fmt.Sprintf("The uploaded image is too big: %s. Please use an image less than 1MB in size", fileHeader.Filename), http.StatusBadRequest)
+			return
+		}
+
+    scanner := bufio.NewScanner(file)
+    var lines []string
+    for scanner.Scan() {
+        text:= scanner.Text()
+        lines = append(lines,text)
+    }
+		_, err = file.Seek(0, io.SeekStart)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+    for i:=0;i<len(lines)-1;i+=2{
+        question:=lines[i]
+        answer:=lines[i+1]
+        flashcard := Flashcards{Question: question, Answer: answer}
+		flashcards = append(flashcards, flashcard)
+    } 
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 
 func parseTemplate(filename string) *template.Template {
     return template.Must(template.ParseFS(templatesFS, "templates/"+filename))
@@ -110,7 +150,6 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 }
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
-        runCount++
         flashTemplate:= parseTemplate("addquestions.html")
         data := map[string]int{
             "Flashcard": 0,
@@ -138,6 +177,19 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
+
+func uploadQuestions(w http.ResponseWriter, r *http.Request) {
+        w.Header().Add("Content-Type", "text/html")
+        flashTemplate:= parseTemplate("uploadquestions.html")
+        data := map[string]int{
+            "Flashcard": 0,
+        }
+        if err := flashTemplate.Execute(w, data); err != nil {
+            log.Println("Error executing template:", err)
+        }
+    }
+
+
 func checkPort() int {
 	port := 8000
 	portstr := strconv.Itoa(port)
@@ -179,6 +231,8 @@ func main() {
     http.HandleFunc("/restart", restart)
     http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
+    http.HandleFunc("/uploadquestions", uploadQuestions);
+    http.HandleFunc("/submituploadquestions", uploadHandler);
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }

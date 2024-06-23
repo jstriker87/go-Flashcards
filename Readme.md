@@ -40,6 +40,8 @@
 ## Authors
 @Jstriker87
 ## Version History
+* 1.0.2 
+    * Added functionality for users to upload a text file (.txt) with questions and answers for the Flashcards
 * 1.0.1
     * Added port checker and updated Readme
 * 1.0.0
@@ -47,3 +49,8 @@
 
 ## License
 This project is licensed under the MIT License.
+
+## Acknowledgements
+This project uses code licensed from the sources below
+[Google Font Roboto](https://fonts.google.com/specimen/Roboto/about)
+[File Upload code by freshman-tech](https://github.com/Freshman-tech/file-upload)
