@@ -68,6 +68,14 @@ text-align:center;
   font-family:Verdana;
 }
 
+#volume-icon{
+  position: absolute;
+  top:0%;
+  left:1%;
+  height:30px;
+  width:30px;
+}
+
 .add-questions-button:hover {
     background-color: #f2ef55; 
     border-color: #bfbc0b;

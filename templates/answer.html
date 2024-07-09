@@ -9,9 +9,10 @@
 <title>Flashcards Revision - Answer</title>
 </head>
 <body>
+    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
         <div class="flashcard">{{.Flashcard.Answer}}</div>
 
     <button type="button" class="ok-button" onclick="goPlay('/static/audio/ok.mp3', '/ok')">OK</button>
-    <button type="button" class="revision-button" onclick="goPlay('/static/audio/wrong.mp3', '/NeedsRevision')">Needs Revision</button>
+    <button type="button" class="revision-button" onclick="goPlay('/static/audio/wrong.mp3', '/needsRevision')">Needs Revision</button>
 </body>
 </html>
