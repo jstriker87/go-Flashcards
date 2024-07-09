@@ -1,9 +1,9 @@
-function playMusic(filename){
-  var music = new Audio(filename);
+function goPlay(musicurl,url){
+  var music = new Audio(musicurl);
   music.play();
+  sleep(1500).then(() => { window.location.href = url; }); 
   }
 
-
-function goToResults() {
-            window.location.href = '/result';
-        }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
