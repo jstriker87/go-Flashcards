@@ -10,7 +10,8 @@
 </head>
 <body>
         <div class="flashcard">{{.Flashcard.Answer}}</div>
-    <button type="button" class="ok-button" onclick="window.location.href='/ok'">OK</button>
-    <button type="button" class="revision-button" onclick="window.location.href='/needsRevision'">Need's Revision</button>
+
+    <button type="button" class="ok-button" onclick="goPlay('/static/audio/ok.mp3', '/ok')">OK</button>
+    <button type="button" class="revision-button" onclick="goPlay('/static/audio/wrong.mp3', '/NeedsRevision')">Needs Revision</button>
 </body>
 </html>
