@@ -112,8 +112,8 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
-    http.Redirect(w, r, "/question", http.StatusSeeOther)
     flashcardCount++
+    http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 

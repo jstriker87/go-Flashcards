@@ -8,7 +8,8 @@
 <script src="/static/js/script.js"></script>
         <div class="page-title">Flashcards Revision - Home Page</div>
 </head>
-<body>
+<body onload="volumeOnLoad()">
+<img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
 <div class="flashcard">Welcome to Flashcards
 {{if eq .flashcardsnum 0}}
         <p>You currently have no flashcard questions. Please add questions before pressing start</p>
