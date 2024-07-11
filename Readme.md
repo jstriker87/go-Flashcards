@@ -40,6 +40,8 @@
 ## Authors
 @Jstriker87
 ## Version History
+* 1.0.3
+    * Added sounds when selecting if the answer to a question is ok or if it needs revision
 * 1.0.2 
     * Added functionality for users to upload a text file (.txt) with questions and answers for the Flashcards
 * 1.0.1
