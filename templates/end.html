@@ -9,7 +9,7 @@
 
 		<title>Flashcards Revision - Results</title>
     </head>
-<body>
+<body onload="volumeOnLoad()">
 
     <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
         <div class="flashcard">You have {{.Flashcard}} question(s) that you were unsure of. Do you want to replay them?</div>
