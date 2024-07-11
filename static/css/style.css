@@ -57,7 +57,7 @@ text-align:center;
   border-radius: 12px;
   padding: 2px;
   position: absolute;
-  top:7%;
+  top:4%;
   left:42%;
   height:30px;
   width:150px;
@@ -66,6 +66,14 @@ text-align:center;
   text-align:center;
   font-weight: bold;
   font-family:Verdana;
+}
+
+#volume-icon{
+  position: absolute;
+  top:0%;
+  left:1%;
+  height:30px;
+  width:30px;
 }
 
 .add-questions-button:hover {

@@ -8,8 +8,9 @@
     <script src="/static/js/script.js"></script>
 <title>Flashcards Revision - Question</title>
 </head>
-<body>
-<div class="flashcard">{{.Flashcard.Question}}</div>
+<body onload="volumeOnLoad()">
+    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
+    <div class="flashcard">{{.Flashcard.Question}}</div>
     <button type="button" class="results-button" onclick="window.location.href='/answer'">See Results</button>
 </body>
 </html>

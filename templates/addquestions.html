@@ -10,7 +10,9 @@
 	<title>Flashcards Revision - Add Questions</title>
 
 </head>
-<body>
+<body onload="volumeOnLoad()">
+
+    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
     <div class="page-title"> Upload a text file (.txt) file with the questions and answers or you can add questions below</div>
     <form action="/uploadquestions" method="POST">
     <br>
