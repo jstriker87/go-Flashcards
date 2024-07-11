@@ -8,7 +8,7 @@
     <script src="/static/js/script.js"></script>
 <title>Flashcards Revision - Answer</title>
 </head>
-<body>
+<body onload="volumeOnLoad()">
     <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
         <div class="flashcard">{{.Flashcard.Answer}}</div>
 

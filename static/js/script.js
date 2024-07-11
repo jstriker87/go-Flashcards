@@ -9,15 +9,16 @@ function sleep(ms) {
 }
 function volume() {
 
-    console.log("The Start volume when vol function run is " + localStorage.getItem("toggleVolume"));
     if (localStorage.getItem("toggleVolume") == "false") {
         localStorage.setItem("toggleVolume", "true");
         document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
         updateVolume(true);
+        console.log("The volume setting when vol function run is " + localStorage.getItem("toggleVolume"));
         return;
     } else {
         localStorage.setItem("toggleVolume", "false");
         updateVolume(false);
+        console.log("The volume setting when vol function run is " + localStorage.getItem("toggleVolume"));
         return;
 
     }
@@ -28,14 +29,14 @@ function updateVolume(isMuted){
     var okButton = document.getElementsByClassName("ok-button");
     var needsRevisonButton = document.getElementsByClassName("revision-button");
       
-    if (isMuted==true){
+    if (isMuted==false){
         okButton.muted = true;
         needsRevisonButton.muted = true;
         document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
 
     } 
 
-    if (isMuted==false){
+    if (isMuted==true){
         okButton.muted = false;
         needsRevisonButton.muted = false;
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
@@ -46,9 +47,9 @@ function updateVolume(isMuted){
 function volumeOnLoad(){
     console.log("The volume setting on load is " + localStorage.getItem("toggleVolume"));
     if (localStorage.getItem("toggleVolume") == "true") {
-        document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
+        updateVolume(true)
     }else{
         
-        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        updateVolume(false)
     }
 }
