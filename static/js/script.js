@@ -30,16 +30,16 @@ function updateVolume(isMuted){
     var needsRevisonButton = document.getElementsByClassName("revision-button");
       
     if (isMuted==false){
-        okButton.muted = true;
-        needsRevisonButton.muted = true;
-        document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
+        okButton.muted = false;
+        needsRevisonButton.muted = false;
+        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
 
     } 
 
     if (isMuted==true){
-        okButton.muted = false;
-        needsRevisonButton.muted = false;
-        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        okButton.muted =true;
+        needsRevisonButton.muted =true;
+        document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
     }
 
 }
