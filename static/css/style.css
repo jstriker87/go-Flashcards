@@ -112,6 +112,23 @@ text-align:center;
   color:#FFFFFF;
 }
 
+.main-menu-button{
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: fixed;
+  top: 80%;
+  left:37%;
+  height:50px;
+  width:250px;
+  background-color:#45f542;
+  color:#FFFFFF;
+}
+
+.main-menu-button:hover {
+  background-color: #3ae031; 
+  border-color: #2cbd2a; 
+}
 .start-button:hover {
   background-color: #3ae031; 
   border-color: #2cbd2a; 

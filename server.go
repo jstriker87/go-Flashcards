@@ -131,6 +131,14 @@ func restart (w http.ResponseWriter, r *http.Request) {
 
 }
 
+
+func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
+    flashcards = []Flashcards{
+    }
+    flashcardCount=0
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
     if len(flashcards) == 0{
         http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -233,6 +241,7 @@ func main() {
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);
     http.HandleFunc("/submituploadquestions", uploadHandler);
+    http.HandleFunc("/mainmenu",clearAndGoToMainMenu)
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
