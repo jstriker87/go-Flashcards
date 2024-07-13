@@ -40,6 +40,8 @@
 ## Authors
 @Jstriker87
 ## Version History
+* 1.0.3.1
+    * Fixed mistake causing audio to be played when starting flashcards, and also added titles to a few pages
 * 1.0.3
     * Added sounds when selecting if the answer to a question is ok or if it needs revision
 * 1.0.2 
