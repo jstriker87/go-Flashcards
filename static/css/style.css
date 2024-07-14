@@ -76,6 +76,24 @@ text-align:center;
   width:30px;
 }
 
+#volume-icon:hover {
+    cursor: grab;
+}
+
+
+#exit-icon{
+  position: absolute;
+  top:0%;
+  left:98%;
+  height:30px;
+  width:30px;
+}
+
+#exit-icon:hover {
+    cursor: grab;
+}
+
+
 .add-questions-button:hover {
     background-color: #f2ef55; 
     border-color: #bfbc0b;
@@ -249,5 +267,4 @@ font-family: "Roboto", sans-serif;
 font-weight: 700;
 font-style: normal;
 }
-
 

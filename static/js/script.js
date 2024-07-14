@@ -3,7 +3,7 @@ function goPlay(musicurl,url){
     var music = new Audio(musicurl);
     music.play();
   }
-  sleep(1500).then(() => { window.location.href = url; }); 
+  sleep(700).then(() => { window.location.href = url; }); 
   }
 
 function sleep(ms) {
@@ -13,10 +13,12 @@ function volume() {
     if (localStorage.getItem("toggleVolume") == "false") {
         localStorage.setItem("toggleVolume", "true");
         document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
+        document.getElementById("volume-icon").title= "Volume On";
         return;
     } else {
         localStorage.setItem("toggleVolume", "false");
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        document.getElementById("volume-icon").title= "Volume Off";
         return;
 
     }
@@ -32,3 +34,6 @@ function volumeOnLoad(){
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
     }
 }
+
+
+

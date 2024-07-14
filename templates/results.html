@@ -9,7 +9,8 @@
 <title>Flashcards Revision - Answer</title>
 </head>
 <body onload="volumeOnLoad()">
-    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
+    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
+    <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
 <div class="flashcard">{{.Flashcard.Answer}}</div>
     <button type="button" class="next-button" onclick="window.location.href='/start'">Next Question</button>
 </body>
