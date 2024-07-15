@@ -72,6 +72,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
         flashcard := Flashcards{Question: question, Answer: answer}
 		flashcards = append(flashcards, flashcard)
     } 
+    StartingFlashcardCount = len(flashcards)
     http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
@@ -117,7 +118,6 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
-        StartingFlashcardCount = len(flashcards)
         flashTemplate := parseTemplate("index.html")
         data := map[string]int{
             "flashcardsnum": len(flashcards),
@@ -145,12 +145,15 @@ func questionOK (w http.ResponseWriter, r *http.Request) {
 
 func restart (w http.ResponseWriter, r *http.Request) {
     flashcardCountIndex=0
+    flashcardCount = 1
+    StartingFlashcardCount = len(flashcards)
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 
 
 func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
+    flashcardCount = 1
     flashcards = []Flashcards{
     }
     flashcardCountIndex=0
@@ -200,6 +203,8 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
             flashcard := Flashcards{Question: question, Answer: answer}
 		    flashcards = append(flashcards, flashcard)
         }
+        StartingFlashcardCount = len(flashcards)
+        fmt.Println("The starting question count in addmanq is: ",StartingFlashcardCount)
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
@@ -214,7 +219,6 @@ func uploadQuestions(w http.ResponseWriter, r *http.Request) {
             log.Println("Error executing template:", err)
         }
     }
-
 
 func checkPort() int {
 	port := 8000
