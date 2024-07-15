@@ -3,7 +3,7 @@ function goPlay(musicurl,url){
     var music = new Audio(musicurl);
     music.play();
   }
-  sleep(1500).then(() => { window.location.href = url; }); 
+  sleep(700).then(() => { window.location.href = url; }); 
   }
 
 function sleep(ms) {
@@ -13,10 +13,12 @@ function volume() {
     if (localStorage.getItem("toggleVolume") == "false") {
         localStorage.setItem("toggleVolume", "true");
         document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
+        document.getElementById("volume-icon").title= "Volume On";
         return;
     } else {
         localStorage.setItem("toggleVolume", "false");
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        document.getElementById("volume-icon").title= "Volume Off";
         return;
 
     }
@@ -31,4 +33,21 @@ function volumeOnLoad(){
     }else{
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
     }
+    if (document.getElementById('card-count')) {
+
+        var cardCount=document.getElementById("card-count").textContent;
+
+    }
+    if (document.getElementById('total-card-count')) {
+
+        var totalCardCount=document.getElementById("total-card-count").textContent;
+        var progressbarval=cardCount/totalCardCount*100; 
+        document.getElementById("prog-value").setAttribute("value", progressbarval); 
+        console.log(progressbarval)
+
+    }
+
 }
+
+
+

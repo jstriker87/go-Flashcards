@@ -40,6 +40,8 @@
 ## Authors
 @Jstriker87
 ## Version History
+* 1.1.    
+    * Added progress bar when questions are displayed. Fonts have also been updated to be unified across the program
 * 1.0.3.1
     * Fixed mistake causing audio to be played when starting flashcards, and also added titles to a few pages
 * 1.0.3

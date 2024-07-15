@@ -9,8 +9,16 @@
 <title>Flashcards Revision - Question</title>
 </head>
 <body onload="volumeOnLoad()">
-    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
+    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
+    <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
     <div class="flashcard">{{.Flashcard.Question}}</div>
+    <div id="card-count" style="display: none;">{{.CardCount}}</div>
+    <div id="total-card-count" style="display: none;">{{.StartCardCount}}</div>
+    <div class="progress-bar">
+            <label for="progress-bar">{{.CardCount}} / {{.StartCardCount}}</label>
+    <progress id="prog-value" max="100"></progress>
+    </div>
     <button type="button" class="results-button" onclick="window.location.href='/answer'">See Results</button>
+
 </body>
 </html>

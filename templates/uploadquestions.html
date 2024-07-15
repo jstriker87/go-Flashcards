@@ -13,13 +13,13 @@
 <title>Flashcards Revision - Upload Questions</title>
 </head>
 <body onload="volumeOnLoad()">
-
-    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
+    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
+    <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
         <div class="page-title">Upload a questions file</div>
         <br>
-        <div class="page-title">The questions and answers must be on their own lines</div>
         <br>
-
+        <div class="page-title">Each question should be on one line followed by the answer on the next line</div>
+        <br>
     <div class="submit-questions">
         <table class="submit-questions-table">
             <tr>

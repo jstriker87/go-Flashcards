@@ -36,7 +36,7 @@ text-align:center;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 }
 .add-questions-button{
   border: 2px solid #ebebfa;
@@ -65,7 +65,7 @@ text-align:center;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 }
 
 #volume-icon{
@@ -75,6 +75,24 @@ text-align:center;
   height:30px;
   width:30px;
 }
+
+#volume-icon:hover {
+    cursor: grab;
+}
+
+
+#exit-icon{
+  position: absolute;
+  top:0%;
+  left:98%;
+  height:30px;
+  width:30px;
+}
+
+#exit-icon:hover {
+    cursor: grab;
+}
+
 
 .add-questions-button:hover {
     background-color: #f2ef55; 
@@ -91,7 +109,7 @@ text-align:center;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 
 }
 .submit-questions-button:hover {
@@ -112,6 +130,23 @@ text-align:center;
   color:#FFFFFF;
 }
 
+.main-menu-button{
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: fixed;
+  top: 80%;
+  left:37%;
+  height:50px;
+  width:250px;
+  background-color:#45f542;
+  color:#FFFFFF;
+}
+
+.main-menu-button:hover {
+  background-color: #3ae031; 
+  border-color: #2cbd2a; 
+}
 .start-button:hover {
   background-color: #3ae031; 
   border-color: #2cbd2a; 
@@ -130,7 +165,7 @@ background-color:#ed7c72;
 color:#FFFFFF;
 text-align:center;
 font-weight: bold;
-font-family:Verdana;
+font-family: "Roboto", sans-serif;
 }
 
 .revision-button:hover {
@@ -151,7 +186,7 @@ background-color:#bfbc0b;
 color:#FFFFFF;
 text-align:center;
 font-weight: bold;
-font-family:Verdana;
+font-family: "Roboto", sans-serif;
 }
 
 .results-button:hover {
@@ -173,7 +208,7 @@ font-family:Verdana;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 }
 
 
@@ -195,7 +230,7 @@ font-family:Verdana;
     color: #000000;
     padding: 5px;
     text-align:center;
-    font-family:Verdana;
+    font-family: "Roboto", sans-serif;
 }
 
 .questions-answers td {
@@ -204,7 +239,7 @@ font-family:Verdana;
     color: #000000;
     padding: 5px;
     text-align:center;
-    font-family:Verdana;
+    font-family: "Roboto", sans-serif;
 }
 
 .submit-questions {
@@ -233,4 +268,18 @@ font-weight: 700;
 font-style: normal;
 }
 
+.progress-bar{
+padding: 5px;
+position: fixed;
+top: 85%;
+left:37%;
+//height:50px;
+//width:250px;
+text-align:center;
+font-weight: bold;
+font-family: "Roboto", sans-serif;
+}
 
+label {
+    vertical-align: top;
+}

@@ -9,13 +9,15 @@
         <div class="page-title">Flashcards Revision - Home Page</div>
 </head>
 <body onload="volumeOnLoad()">
-<img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" onclick="volume()"/>
+<img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
+<img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
 <div class="flashcard">Welcome to Flashcards
 {{if eq .flashcardsnum 0}}
-        <p>You currently have no flashcard questions. Please add questions before pressing start</p>
+        <p>You currently have no flashcard questions or answers. Please add questions before pressing start</p>
 {{end}}
 </div>
     <button type="button" class="start-button" onclick="window.location.href='/question'">Start</button>
+
     <button type="button" class="add-questions-button" onclick="window.location.href='/addquestions'">Add Questions</button>
 </body>
 </html>

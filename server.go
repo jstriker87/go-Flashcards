@@ -12,6 +12,8 @@ import (
     "io/fs"
     "net"
     "bufio"
+    "os/exec"
+    "runtime"
 )
 type Flashcards struct {
     Question string
@@ -24,7 +26,11 @@ var templatesFS embed.FS
 //go:embed static
 var staticFS embed.FS
 
-var flashcardCount = 0
+var flashcardCountIndex = 0
+var flashcardCount = 1
+var StartingFlashcardCount = 0
+
+
 var flashcards = []Flashcards{
 }
 var version = 1.0   
@@ -66,6 +72,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
         flashcard := Flashcards{Question: question, Answer: answer}
 		flashcards = append(flashcards, flashcard)
     } 
+    StartingFlashcardCount = len(flashcards)
     http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
@@ -77,7 +84,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 
         flashTemplate := parseTemplate("answer.html")
         data := map[string]Flashcards{
-            "Flashcard": flashcards[flashcardCount],
+            "Flashcard": flashcards[flashcardCountIndex],
 
             }
         if err := flashTemplate.Execute(w, data); err != nil {
@@ -88,12 +95,21 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
         runCount++
-        if flashcardCount < len(flashcards){
+        if flashcardCountIndex < len(flashcards){
         flashTemplate := parseTemplate("questions.html")
-        data := map[string]Flashcards{
-            "Flashcard": flashcards[flashcardCount],
+        type gameData struct{
+            Flashcard Flashcards
+            CardCount int
+            StartCardCount int
+
         }
-        if err := flashTemplate.Execute(w, data); err != nil {
+        theGameData := gameData{ 
+    
+            Flashcard:  flashcards[flashcardCountIndex],
+            CardCount: flashcardCount,
+            StartCardCount: StartingFlashcardCount,
+        }
+        if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
     }else {
@@ -113,22 +129,35 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
     flashcardCount++
+    flashcardCountIndex++
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
-    flashcards = append(flashcards[:flashcardCount], flashcards[flashcardCount+1:]...) 
+    flashcardCount++
+    flashcards = append(flashcards[:flashcardCountIndex], flashcards[flashcardCountIndex+1:]...) 
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 
 
 func restart (w http.ResponseWriter, r *http.Request) {
-    flashcardCount=0
+    flashcardCountIndex=0
+    flashcardCount = 1
+    StartingFlashcardCount = len(flashcards)
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
+}
+
+
+func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
+    flashcardCount = 1
+    flashcards = []Flashcards{
+    }
+    flashcardCountIndex=0
+    http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
@@ -174,6 +203,8 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
             flashcard := Flashcards{Question: question, Answer: answer}
 		    flashcards = append(flashcards, flashcard)
         }
+        StartingFlashcardCount = len(flashcards)
+        fmt.Println("The starting question count in addmanq is: ",StartingFlashcardCount)
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
@@ -188,7 +219,6 @@ func uploadQuestions(w http.ResponseWriter, r *http.Request) {
             log.Println("Error executing template:", err)
         }
     }
-
 
 func checkPort() int {
 	port := 8000
@@ -210,11 +240,29 @@ func checkPort() int {
 	defer l.Close()
     return port
 }
+
+func openServerWebpage(url string) error {
+    var cmd string
+    var args []string
+    switch runtime.GOOS {
+    case "windows":
+        cmd = "cmd"
+        args = []string{"/c", "start"}
+    case "darwin":
+        cmd = "open"
+    default: // "linux", "freebsd", "openbsd", "netbsd"
+        cmd = "xdg-open"
+    }
+    args = append(args, url)
+    return exec.Command(cmd, args...).Start()
+}
+
 func main() {
     port:= checkPort()
     if runCount < 1 {
 
-        fmt.Println("Starting flashcards. Go to http://localhost:",port)
+        fmt.Printf("Starting flashcards at http://localhost:%d",port)
+        openServerWebpage("http://localhost:" + strconv.Itoa(port))
 
     }
     runCount++
@@ -233,6 +281,7 @@ func main() {
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);
     http.HandleFunc("/submituploadquestions", uploadHandler);
+    http.HandleFunc("/mainmenu",clearAndGoToMainMenu)
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
