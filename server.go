@@ -27,6 +27,8 @@ var templatesFS embed.FS
 var staticFS embed.FS
 
 var flashcardCount = 0
+var StartingFlashcardCount = 0
+
 var flashcards = []Flashcards{
 }
 var version = 1.0   
@@ -92,10 +94,20 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
         runCount++
         if flashcardCount < len(flashcards){
         flashTemplate := parseTemplate("questions.html")
-        data := map[string]Flashcards{
-            "Flashcard": flashcards[flashcardCount],
+        type gameData struct{
+            Flashcard Flashcards
+            flashcardCount int
+            startCount int
+
         }
-        if err := flashTemplate.Execute(w, data); err != nil {
+        theGameData := gameData{ 
+    
+            Flashcard:  flashcards[flashcardCount],
+            flashcardCount: flashcardCount,
+
+        }
+
+        if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
     }else {
