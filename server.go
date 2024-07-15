@@ -29,8 +29,6 @@ var staticFS embed.FS
 var flashcardCountIndex = 0
 var flashcardCount = 1
 var StartingFlashcardCount = 0
-
-
 var flashcards = []Flashcards{
 }
 var version = 1.0   
@@ -73,6 +71,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		flashcards = append(flashcards, flashcard)
     } 
     StartingFlashcardCount = len(flashcards)
+
     http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
@@ -101,7 +100,6 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
             Flashcard Flashcards
             CardCount int
             StartCardCount int
-
         }
         theGameData := gameData{ 
     
