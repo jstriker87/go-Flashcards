@@ -26,8 +26,10 @@ var templatesFS embed.FS
 //go:embed static
 var staticFS embed.FS
 
-var flashcardCount = 0
+var flashcardCountIndex = 0
+var flashcardCount = 1
 var StartingFlashcardCount = 0
+
 
 var flashcards = []Flashcards{
 }
@@ -81,7 +83,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 
         flashTemplate := parseTemplate("answer.html")
         data := map[string]Flashcards{
-            "Flashcard": flashcards[flashcardCount],
+            "Flashcard": flashcards[flashcardCountIndex],
 
             }
         if err := flashTemplate.Execute(w, data); err != nil {
@@ -92,21 +94,20 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
         runCount++
-        if flashcardCount < len(flashcards){
+        if flashcardCountIndex < len(flashcards){
         flashTemplate := parseTemplate("questions.html")
         type gameData struct{
             Flashcard Flashcards
-            flashcardCount int
-            startCount int
+            CardCount int
+            StartCardCount int
 
         }
         theGameData := gameData{ 
     
-            Flashcard:  flashcards[flashcardCount],
-            flashcardCount: flashcardCount,
-
+            Flashcard:  flashcards[flashcardCountIndex],
+            CardCount: flashcardCount,
+            StartCardCount: StartingFlashcardCount,
         }
-
         if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
@@ -116,6 +117,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
+        StartingFlashcardCount = len(flashcards)
         flashTemplate := parseTemplate("index.html")
         data := map[string]int{
             "flashcardsnum": len(flashcards),
@@ -127,20 +129,22 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
     flashcardCount++
+    flashcardCountIndex++
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
-    flashcards = append(flashcards[:flashcardCount], flashcards[flashcardCount+1:]...) 
+    flashcardCount++
+    flashcards = append(flashcards[:flashcardCountIndex], flashcards[flashcardCountIndex+1:]...) 
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 
 
 func restart (w http.ResponseWriter, r *http.Request) {
-    flashcardCount=0
+    flashcardCountIndex=0
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
@@ -149,7 +153,7 @@ func restart (w http.ResponseWriter, r *http.Request) {
 func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
     flashcards = []Flashcards{
     }
-    flashcardCount=0
+    flashcardCountIndex=0
     http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 

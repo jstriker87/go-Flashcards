@@ -33,6 +33,20 @@ function volumeOnLoad(){
     }else{
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
     }
+    if (document.getElementById('card-count')) {
+
+        var cardCount=document.getElementById("card-count").textContent;
+
+    }
+    if (document.getElementById('total-card-count')) {
+
+        var totalCardCount=document.getElementById("total-card-count").textContent;
+        var progressbarval=cardCount/totalCardCount*100; 
+        document.getElementById("prog-value").setAttribute("value", progressbarval); 
+        console.log(progressbarval)
+
+    }
+
 }
 
 

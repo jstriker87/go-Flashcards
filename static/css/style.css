@@ -36,7 +36,7 @@ text-align:center;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 }
 .add-questions-button{
   border: 2px solid #ebebfa;
@@ -65,7 +65,7 @@ text-align:center;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 }
 
 #volume-icon{
@@ -109,7 +109,7 @@ text-align:center;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 
 }
 .submit-questions-button:hover {
@@ -165,7 +165,7 @@ background-color:#ed7c72;
 color:#FFFFFF;
 text-align:center;
 font-weight: bold;
-font-family:Verdana;
+font-family: "Roboto", sans-serif;
 }
 
 .revision-button:hover {
@@ -186,7 +186,7 @@ background-color:#bfbc0b;
 color:#FFFFFF;
 text-align:center;
 font-weight: bold;
-font-family:Verdana;
+font-family: "Roboto", sans-serif;
 }
 
 .results-button:hover {
@@ -208,7 +208,7 @@ font-family:Verdana;
   color:#FFFFFF;
   text-align:center;
   font-weight: bold;
-  font-family:Verdana;
+  font-family: "Roboto", sans-serif;
 }
 
 
@@ -230,7 +230,7 @@ font-family:Verdana;
     color: #000000;
     padding: 5px;
     text-align:center;
-    font-family:Verdana;
+    font-family: "Roboto", sans-serif;
 }
 
 .questions-answers td {
@@ -239,7 +239,7 @@ font-family:Verdana;
     color: #000000;
     padding: 5px;
     text-align:center;
-    font-family:Verdana;
+    font-family: "Roboto", sans-serif;
 }
 
 .submit-questions {
@@ -268,3 +268,18 @@ font-weight: 700;
 font-style: normal;
 }
 
+.progress-bar{
+padding: 5px;
+position: fixed;
+top: 85%;
+left:37%;
+//height:50px;
+//width:250px;
+text-align:center;
+font-weight: bold;
+font-family: "Roboto", sans-serif;
+}
+
+label {
+    vertical-align: top;
+}
