@@ -1,10 +1,18 @@
-function goPlay(musicurl,url){
-  if (localStorage.getItem("toggleVolume") == "true") {
-    var music = new Audio(musicurl);
-    music.play();
-  }
-  sleep(700).then(() => { window.location.href = url; }); 
-  }
+let currentAudio = null;
+
+function goPlay(musicurl,redirecturl){
+        currentAudio = new Audio(musicurl);
+        let test = localStorage.setItem("currentAudio", currentAudio);
+        console.log(test);
+        currentAudio.play();
+        sleep(700).then(() => { window.location.href = redirecturl; }); 
+    }
+
+function noPlay(){
+    let currentAudio = localStorage.getItem("currentAudio") 
+    console.log(currentAudio);
+    currentAudio.pause();
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -19,6 +27,7 @@ function volume() {
         localStorage.setItem("toggleVolume", "false");
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
         document.getElementById("volume-icon").title= "Volume Off";
+        noPlay();
         return;
 
     }

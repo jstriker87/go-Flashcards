@@ -10,7 +10,7 @@
 </head>
 <body onload="volumeOnLoad()">
     <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
-    <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
+    <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/">
     <div class="flashcard">{{.Flashcard.Question}}</div>
     <div id="card-count" style="display: none;">{{.CardCount}}</div>
     <div id="total-card-count" style="display: none;">{{.StartCardCount}}</div>
