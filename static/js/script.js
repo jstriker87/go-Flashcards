@@ -43,11 +43,20 @@ function volumeOnLoad(){
         var totalCardCount=document.getElementById("total-card-count").textContent;
         var progressbarval=cardCount/totalCardCount*100; 
         document.getElementById("prog-value").setAttribute("value", progressbarval); 
-        console.log(progressbarval)
 
     }
 
+    tts();
 }
 
-
-
+function tts(){
+    if (localStorage.getItem("toggleVolume") == "true") {
+        var elements = document.getElementsByClassName("flashcard");
+        for (var i = 0; i < elements.length; i++) {
+            var text = elements[i].textContent; 
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = text;
+            window.speechSynthesis.speak(msg);
+        }
+    }
+}

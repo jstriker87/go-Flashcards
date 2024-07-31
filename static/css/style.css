@@ -14,6 +14,23 @@
   font-style: normal;
   text-align:center;
 }
+.startflashcard {
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: fixed;
+  top: 20%;
+  left:30%;
+  height:250px;
+  width:450px;
+  background-color:#ebebfa;
+  color:#000000;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  text-align:center;
+}
+
 button {
 
 font-family: "Roboto", sans-serif;

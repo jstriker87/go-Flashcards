@@ -204,7 +204,6 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 		    flashcards = append(flashcards, flashcard)
         }
         StartingFlashcardCount = len(flashcards)
-        fmt.Println("The starting question count in addmanq is: ",StartingFlashcardCount)
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
