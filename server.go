@@ -29,8 +29,8 @@ var staticFS embed.FS
 var flashcardCountIndex = 0
 var flashcardCount = 1
 var StartingFlashcardCount = 0
-
-
+var gameStarted = false
+var flashcardslength = 0
 var flashcards = []Flashcards{
 }
 var version = 1.0   
@@ -94,6 +94,9 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
+        if len(flashcards) > 0 {
+            gameStarted = true
+        }
         runCount++
         if flashcardCountIndex < len(flashcards){
         flashTemplate := parseTemplate("questions.html")
@@ -119,10 +122,16 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
         flashTemplate := parseTemplate("index.html")
-        data := map[string]int{
-            "flashcardsnum": len(flashcards),
+        flashcardslength = len(flashcards)
+         type gameData struct{
+            FcLength int
+            GameHasStarted bool
         }
-        if err := flashTemplate.Execute(w, data); err != nil {
+        theGameData := gameData {
+            FcLength: len(flashcards),
+            GameHasStarted: gameStarted,
+        }
+        if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
     }
@@ -143,7 +152,7 @@ func questionOK (w http.ResponseWriter, r *http.Request) {
 }
 
 
-func restart (w http.ResponseWriter, r *http.Request) {
+func replay (w http.ResponseWriter, r *http.Request) {
     flashcardCountIndex=0
     flashcardCount = 1
     StartingFlashcardCount = len(flashcards)
@@ -151,6 +160,13 @@ func restart (w http.ResponseWriter, r *http.Request) {
 
 }
 
+func restart(w http.ResponseWriter, r *http.Request) {
+    flashcardCountIndex= 0
+    flashcardCount = 0
+    flashcards = nil
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
 
 func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
     flashcardCount = 1
@@ -275,7 +291,8 @@ func main() {
     http.HandleFunc("/needsRevision", questionNeedsRevision)
     http.HandleFunc("/ok", questionOK)
     http.HandleFunc("/answer", showAnswer)
-    http.HandleFunc("/restart", restart)
+    http.HandleFunc("/replay", replay)
+    http.HandleFunc("/restart",restart)
     http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);

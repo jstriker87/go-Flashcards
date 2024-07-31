@@ -147,6 +147,19 @@ text-align:center;
   color:#FFFFFF;
 }
 
+.restart-button{
+  border: 2px solid #ebebfa;
+  border-radius: 12px;
+  padding: 5px;
+  position: fixed;
+  top: 80%;
+  left:37%;
+  height:50px;
+  width:250px;
+  background-color:#FEA304;
+  color:#FFFFFF;
+}
+
 .main-menu-button{
   border: 2px solid #ebebfa;
   border-radius: 12px;

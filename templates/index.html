@@ -12,12 +12,21 @@
 <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
 <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
 <div class="startflashcard">Welcome to Flashcards
-{{if eq .flashcardsnum 0}}
+{{if eq .FcLength 0}}
         <p>You currently have no flashcard questions or answers. Please add questions before pressing start</p>
 {{end}}
 </div>
+    {{ if and .GameHasStarted (gt .FcLength 0) }}
+    <button type="button" class="start-button" onclick="window.location.href='/question'">Continue</button>
+    {{else}}
     <button type="button" class="start-button" onclick="window.location.href='/question'">Start</button>
-
+    {{end}}
     <button type="button" class="add-questions-button" onclick="window.location.href='/addquestions'">Add Questions</button>
+    <div class ="restart">
+    {{ if and .GameHasStarted (gt .FcLength 0) }}
+        <button type="button" class="restart-button" onclick="window.location.href='/restart'">Restart</button>
+    {{end}}
+    </div>
+
 </body>
 </html>
