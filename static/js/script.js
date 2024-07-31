@@ -1,27 +1,31 @@
-let currentAudio = null;
 
 function goPlay(musicurl,redirecturl){
+    if (localStorage.getItem("toggleVolume") == "true") {
         currentAudio = new Audio(musicurl);
-        let test = localStorage.setItem("currentAudio", currentAudio);
-        console.log(test);
         currentAudio.play();
         sleep(700).then(() => { window.location.href = redirecturl; }); 
     }
+    else {
+        sleep(700).then(() => { window.location.href = redirecturl; }); 
+
+    }
+
+}
 
 function noPlay(){
-    let currentAudio = localStorage.getItem("currentAudio") 
-    console.log(currentAudio);
-    currentAudio.pause();
+    window.speechSynthesis.cancel();
 }
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 function volume() {
     if (localStorage.getItem("toggleVolume") == "false") {
         localStorage.setItem("toggleVolume", "true");
         document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
         document.getElementById("volume-icon").title= "Volume On";
+        tts();
         return;
     } else {
         localStorage.setItem("toggleVolume", "false");
@@ -36,6 +40,8 @@ function volume() {
 function volumeOnLoad(){
     if (localStorage.getItem("toggleVolume") == null) {
         localStorage.setItem("toggleVolume", "false");
+        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+
     }
     if (localStorage.getItem("toggleVolume") == "true") {
         document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
@@ -64,8 +70,10 @@ function tts(){
         for (var i = 0; i < elements.length; i++) {
             var text = elements[i].textContent; 
             var msg = new SpeechSynthesisUtterance();
+            localStorage.setItem("currentAudio",msg);
             msg.text = text;
             window.speechSynthesis.speak(msg);
+            
         }
     }
 }
