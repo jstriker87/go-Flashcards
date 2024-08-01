@@ -38,6 +38,8 @@ function volume() {
 }
 
 function volumeOnLoad(){
+    console.log(window.screen.availHeight);
+    console.log(window.screen.availWidth);
     if (localStorage.getItem("toggleVolume") == null) {
         localStorage.setItem("toggleVolume", "false");
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";

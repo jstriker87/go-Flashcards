@@ -1,10 +1,15 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margn */
+}
 .flashcard {
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
-  position: fixed;
   top: 20%;
-  left:30%;
   height:250px;
   width:450px;
   background-color:#ebebfa;
@@ -20,7 +25,6 @@
   padding: 5px;
   position: fixed;
   top: 20%;
-  left:30%;
   height:250px;
   width:450px;
   background-color:#ebebfa;
@@ -59,9 +63,8 @@ text-align:center;
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
-  position: absolute;
+  position: fixed;
   top: 80%;
-  left:37%;
   height:50px;
   width:250px;
   background-color:#bfbc0b;
@@ -72,11 +75,11 @@ text-align:center;
 .upload-questions-button{
   border: 2px solid #ebebfa;
   border-radius: 12px;
+  position: fixed;
+  top: 7%;
   padding: 2px;
-  position: absolute;
-  top:4%;
-  left:42%;
   height:30px;
+  margin-top: 5px;
   width:150px;
   background-color:#bfbc0b;
   color:#FFFFFF;
@@ -119,7 +122,6 @@ text-align:center;
   border: 2px solid #ebebfa;
   border-radius: 12px;
   position: absolute;
-  left: 40%;
   height:35px;
   width:250px;
   background-color:#bfbc0b;
@@ -140,7 +142,6 @@ text-align:center;
   padding: 5px;
   position: fixed;
   top: 70%;
-  left:37%;
   height:50px;
   width:250px;
   background-color:#45f542;
@@ -153,7 +154,6 @@ text-align:center;
   padding: 5px;
   position: fixed;
   top: 80%;
-  left:37%;
   height:50px;
   width:250px;
   background-color:#FEA304;
@@ -209,7 +209,6 @@ border-radius: 12px;
 padding: 5px;
 position: fixed;
 top: 70%;
-left:37%;
 height:50px;
 width:250px;
 background-color:#bfbc0b;
@@ -241,14 +240,15 @@ font-family: "Roboto", sans-serif;
   font-family: "Roboto", sans-serif;
 }
 
+.questions-answers {
+
+    margin-top: 40px;;
+
+}
 
 .questions-answers table {
-    margin-left: auto;
-    margin-right:auto;
     border: 1px solid #dededf;
     width: 50%;
-    table-layout: fixed;
-    border-collapse: collapse;
     border-spacing: 1px;
     text-align: left;
 }
@@ -272,16 +272,13 @@ font-family: "Roboto", sans-serif;
     font-family: "Roboto", sans-serif;
 }
 
-.submit-questions {
-display: flex;
-justify-content: center;
-padding-top: 20px; /* Optional: Adds some padding from the top */
-}
-
 .submit-questions-table {
-width: 50%;
-border-collapse: collapse;
-text-align: center;
+    position: fixed;
+    top: 20%;
+    left: 25%;
+    width: 50%;
+    border-collapse: collapse;
+    text-align: center;
 }
 
 .submit-questions-table td {
@@ -292,7 +289,7 @@ padding: 10px;
 
 .page-title {
 position: absolute;
-left:35%;
+top: 5%;
 font-family: "Roboto", sans-serif;
 font-weight: 700;
 font-style: normal;
@@ -302,9 +299,6 @@ font-style: normal;
 padding: 5px;
 position: fixed;
 top: 85%;
-left:37%;
-//height:50px;
-//width:250px;
 text-align:center;
 font-weight: bold;
 font-family: "Roboto", sans-serif;
