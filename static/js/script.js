@@ -38,8 +38,7 @@ function volume() {
 }
 
 function volumeOnLoad(){
-    console.log(window.screen.availHeight);
-    console.log(window.screen.availWidth);
+    console.log("The dark mode status is: " + localStorage.getItem("toggleDarkMode"));
     if (localStorage.getItem("toggleVolume") == null) {
         localStorage.setItem("toggleVolume", "false");
         document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
@@ -79,3 +78,21 @@ function tts(){
         }
     }
 }
+
+function toggleDarkMode() {
+    var element = document.body;
+    if (localStorage.getItem("toggleDarkMode") == "false") {
+        localStorage.setItem("toggleDarkMode", "true");
+        console.log("The toggled dark mode status is: " + localStorage.getItem("toggleDarkMode"));
+        element.classList.toggle("dark-mode");
+        return;
+    }
+    if (localStorage.getItem("toggleDarkMode") == "true") {
+        localStorage.setItem("toggleDarkMode", "false");
+        console.log("The toggled dark mode status is: " + localStorage.getItem("toggleDarkMode"));
+        element.classList.toggle("light-mode");
+        return;
+    }
+    console.log("The dark mode status is: " + localStorage.getItem("toggleDarkMode"));
+
+    }
