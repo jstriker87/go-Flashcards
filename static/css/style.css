@@ -301,11 +301,11 @@ label {
 
 
 .dark-mode {
-
-
+    background-color: black;
+    color: white;
 }
 
 .light-mode {
-
-
+    background-color: white;
+    color: black;
 }

@@ -1,4 +1,4 @@
-
+let theme = 'light';
 function goPlay(musicurl,redirecturl){
     if (localStorage.getItem("toggleVolume") == "true") {
         currentAudio = new Audio(musicurl);
@@ -80,19 +80,33 @@ function tts(){
 }
 
 function toggleDarkMode() {
-    var element = document.body;
-    if (localStorage.getItem("toggleDarkMode") == "false") {
-        localStorage.setItem("toggleDarkMode", "true");
-        console.log("The toggled dark mode status is: " + localStorage.getItem("toggleDarkMode"));
-        element.classList.toggle("dark-mode");
-        return;
-    }
-    if (localStorage.getItem("toggleDarkMode") == "true") {
-        localStorage.setItem("toggleDarkMode", "false");
-        console.log("The toggled dark mode status is: " + localStorage.getItem("toggleDarkMode"));
-        element.classList.toggle("light-mode");
-        return;
-    }
-    console.log("The dark mode status is: " + localStorage.getItem("toggleDarkMode"));
+        var element = document.body;
+        if (theme=='light'){
+            theme = 'dark';
+            element.classList.toggle("dark-mode");
+            const volumeIcon = document.getElementById('volume-icon');
+            volumeIcon.src = `/static/images/volume-off-${theme}.png`; 
+            const exitIcon = document.getElementById('exit-icon');
+            exitIcon.src = `/static/images/exit-${theme}.png`; 
+            const darkLightIcon = document.getElementById('dark-light-icon');
+            console.log(darkLightIcon);
+            darkLightIcon.src = `/static/images/light-dark-${theme}.png`; 
+            const flashcard = document.getElementsByClassName("flashcard");
+            console.log(flashcard);
+            return;
+        }
+        if (theme=='dark'){
+            theme = 'light';
+            element.classList.toggle("dark-mode");
+            const volumeIcon = document.getElementById('volume-icon');
+            volumeIcon.src = `/static/images/volume-off-${theme}.png`; 
+            const exitIcon = document.getElementById('exit-icon');
+            exitIcon.src = `/static/images/exit-${theme}.png`; 
+            const darkLightIcon = document.getElementById('dark-light-icon');
+            darkLightIcon.src = `/static/images/dark-light-${theme}.png`; 
+            const flashcard= document.getElementById('flashcard');
+            flashcard.style.backgroundColor='white';;
 
+            return;
+        }
     }
