@@ -23,13 +23,13 @@ function sleep(ms) {
 function volume() {
     if (localStorage.getItem("toggleVolume") == "false") {
         localStorage.setItem("toggleVolume", "true");
-        document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
+        document.getElementById("volume-icon").src = "/static/images/volume-on-light.png";
         document.getElementById("volume-icon").title= "Volume On";
         tts();
         return;
     } else {
         localStorage.setItem("toggleVolume", "false");
-        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        document.getElementById("volume-icon").src = "/static/images/volume-off-light.png";
         document.getElementById("volume-icon").title= "Volume Off";
         noPlay();
         return;
@@ -41,13 +41,13 @@ function volumeOnLoad(){
     console.log("The dark mode status is: " + localStorage.getItem("toggleDarkMode"));
     if (localStorage.getItem("toggleVolume") == null) {
         localStorage.setItem("toggleVolume", "false");
-        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        document.getElementById("volume-icon").src = "/static/images/volume-off-light.png";
 
     }
     if (localStorage.getItem("toggleVolume") == "true") {
-        document.getElementById("volume-icon").src = "/static/images/volume-on.svg";
+        document.getElementById("volume-icon").src = "/static/images/volume-on-light.png";
     }else{
-        document.getElementById("volume-icon").src = "/static/images/volume-off.svg";
+        document.getElementById("volume-icon").src = "/static/images/volume-off-light.png";
     }
     if (document.getElementById('card-count')) {
 
