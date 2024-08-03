@@ -1,9 +1,9 @@
 let theme = localStorage.getItem("theme")
-if (theme == null) {
-    localStorage.setItem("theme","light");
-}
+if (theme == null){
+            localStorage.setItem("theme", "light");
+    }
+    
 function goPlay(musicurl,redirecturl){
-    console.log("The dark mode status is: " + theme); 
     if (localStorage.getItem("toggleVolume") == "true") {
         currentAudio = new Audio(musicurl);
         currentAudio.play();
@@ -42,15 +42,18 @@ function volume() {
 }
 
 function volumeOnLoad(){
-    console.log("The dark mode status is: " + localStorage.getItem("toggleDarkMode"));
+    console.log(localStorage.getItem("toggleVolume"));
+    console.log(localStorage.getItem("theme"));
+    setelementsTheme();
+
     if (localStorage.getItem("toggleVolume") == null) {
         localStorage.setItem("toggleVolume", "false");
-        document.getElementById("volume-icon").src`/static/images/volume-off-${theme}.png`; 
-
     }
+
     if (localStorage.getItem("toggleVolume") == "true") {
         document.getElementById("volume-icon").src = `/static/images/volume-on-${theme}.png`;
-    }else{
+        tts();
+    } else {
         document.getElementById("volume-icon").src = `/static/images/volume-off-${theme}.png`;
     }
     if (document.getElementById('card-count')) {
@@ -58,15 +61,13 @@ function volumeOnLoad(){
         var cardCount=document.getElementById("card-count").textContent;
 
     }
+
     if (document.getElementById('total-card-count')) {
-
-        var totalCardCount=document.getElementById("total-card-count").textContent;
-        var progressbarval=cardCount/totalCardCount*100; 
-        document.getElementById("prog-value").setAttribute("value", progressbarval); 
-
+        var totalCardCount = document.getElementById("total-card-count").textContent;
+        var progressbarval = cardCount / totalCardCount * 100;
+        document.getElementById("prog-value").setAttribute("value", progressbarval);
     }
 
-    tts();
 }
 
 function tts(){
@@ -85,28 +86,46 @@ function tts(){
 
 function toggleDarkMode() {
         var element = document.body;
+        console.log("The theme is:" + theme);
         if (theme=='light'){
-            theme = 'dark';
+            localStorage.setItem("theme", "dark");
             element.classList.toggle("dark-mode");
-            document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
-            document.getElementById('exit-icon').src = `/static/images/exit-${theme}.png`; 
-            document.getElementById('dark-light-icon').src = `/static/images/light-dark-${theme}.png`; 
-            const startflashcard = document.getElementsByClassName("startflashcard");
-            const flashcard = document.getElementsByClassName("startflashcard");
-            startflashcard[0].style.backgroundColor = '#000000';
-            flashcard[0].style.backgroundColor = '#000000';
+            window.location.reload();
             return;
         }
         if (theme=='dark'){
-            theme = 'light';
+            localStorage.setItem("theme", "light");
             element.classList.toggle("dark-mode");
-            document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
-            document.getElementById('exit-icon').src = `/static/images/exit-${theme}.png`; 
-            document.getElementById('dark-light-icon').src = `/static/images/light-dark-${theme}.png`; 
-            const startflashcard = document.getElementsByClassName("startflashcard");
-            const flashcard = document.getElementsByClassName("startflashcard");
-            startflashcard[0].style.backgroundColor = '#ebebfa';
-            flashcard[0].style.backgroundColor = '#ebebfa';
+            window.location.reload();
             return;
         }
     }
+
+function setelementsTheme(){
+    var element = document.body;
+    element.classList.toggle(`${theme}-mode`);
+    document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
+    document.getElementById('exit-icon').src = `/static/images/exit-${theme}.png`; 
+    document.getElementById('dark-light-icon').src = `/static/images/light-dark-${theme}.png`; 
+    const startflashcarddiv = document.getElementsByClassName("startflashcard");
+    const flashcarddiv = document.getElementsByClassName("flashcard");
+    if (startflashcarddiv.length > 0) {
+    if (theme =='light'){
+        console.log("Light theme");
+        startflashcarddiv[0].style.backgroundColor = '#ebebfa';
+    }
+    if (theme =='dark'){
+        console.log("Dark theme");
+        startflashcarddiv[0].style.backgroundColor = '#000000';
+        }
+    if (flashcarddiv.length > 0) {
+        if (theme =='light'){
+            flashcarddiv[0].style.backgroundColor = '#ebebfa';
+            console.log("Light theme");
+        }
+        if (theme =='dark'){
+            flashcarddiv[0].style.backgroundColor = '#000000';
+           }
+        }
+    }
+}
