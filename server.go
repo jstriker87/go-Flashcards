@@ -22,20 +22,16 @@ type Flashcards struct {
 
 //go:embed templates/*.html
 var templatesFS embed.FS
-
 //go:embed static
 var staticFS embed.FS
 
 var flashcardCountIndex = 0
 var flashcardCount = 1
 var StartingFlashcardCount = 0
-
-
+var gameStarted = false
 var flashcards = []Flashcards{
 }
-var version = 1.0   
-var runCount = 0
-var available = false
+var portAvailable = false
 const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -94,7 +90,9 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
-        runCount++
+        if len(flashcards) > 0 {
+            gameStarted = true
+        }
         if flashcardCountIndex < len(flashcards){
         flashTemplate := parseTemplate("questions.html")
         type gameData struct{
@@ -119,10 +117,15 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
         flashTemplate := parseTemplate("index.html")
-        data := map[string]int{
-            "flashcardsnum": len(flashcards),
+         type gameData struct{
+            FcLength int
+            GameHasStarted bool
         }
-        if err := flashTemplate.Execute(w, data); err != nil {
+        theGameData := gameData {
+            FcLength: len(flashcards),
+            GameHasStarted: gameStarted,
+        }
+        if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
     }
@@ -143,7 +146,7 @@ func questionOK (w http.ResponseWriter, r *http.Request) {
 }
 
 
-func restart (w http.ResponseWriter, r *http.Request) {
+func replay (w http.ResponseWriter, r *http.Request) {
     flashcardCountIndex=0
     flashcardCount = 1
     StartingFlashcardCount = len(flashcards)
@@ -151,9 +154,15 @@ func restart (w http.ResponseWriter, r *http.Request) {
 
 }
 
+func restart(w http.ResponseWriter, r *http.Request) {
+    flashcardCountIndex= 0
+    flashcards = nil
+    gameStarted = false
+    http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
 
 func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
-    flashcardCount = 1
     flashcards = []Flashcards{
     }
     flashcardCountIndex=0
@@ -162,9 +171,8 @@ func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
 
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
     if len(flashcards) == 0{
+        gameStarted = false
         http.Redirect(w, r, "/", http.StatusSeeOther)
-
-
     }
         
 
@@ -179,6 +187,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 }
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
+        flashcardCount = 1 
         flashTemplate:= parseTemplate("addquestions.html")
         data := map[string]int{
             "Flashcard": 0,
@@ -204,7 +213,6 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 		    flashcards = append(flashcards, flashcard)
         }
         StartingFlashcardCount = len(flashcards)
-        fmt.Println("The starting question count in addmanq is: ",StartingFlashcardCount)
         http.Redirect(w, r, "/", http.StatusSeeOther)
     }
 }
@@ -225,7 +233,7 @@ func checkPort() int {
 	portstr := strconv.Itoa(port)
 	var l net.Listener
 	var err error
-	for available != true {
+	for portAvailable != true {
 		l, err = net.Listen("tcp", ":" + portstr)
 		if err != nil {
 			fmt.Printf("Error: %s\n", err)
@@ -234,7 +242,7 @@ func checkPort() int {
 				portstr = strconv.Itoa(port)
 			}
 		} else {
-			available = true
+			portAvailable = true
 		}
 	}
 	defer l.Close()
@@ -259,13 +267,8 @@ func openServerWebpage(url string) error {
 
 func main() {
     port:= checkPort()
-    if runCount < 1 {
-
-        fmt.Printf("Starting flashcards at http://localhost:%d",port)
-        openServerWebpage("http://localhost:" + strconv.Itoa(port))
-
-    }
-    runCount++
+    fmt.Printf("Starting flashcards at http://localhost:%d",port)
+    openServerWebpage("http://localhost:" + strconv.Itoa(port))
     staticSubFS, err := fs.Sub(staticFS, "static")
     if err != nil {
         log.Fatal(err)
@@ -276,7 +279,8 @@ func main() {
     http.HandleFunc("/needsRevision", questionNeedsRevision)
     http.HandleFunc("/ok", questionOK)
     http.HandleFunc("/answer", showAnswer)
-    http.HandleFunc("/restart", restart)
+    http.HandleFunc("/replay", replay)
+    http.HandleFunc("/restart",restart)
     http.HandleFunc("/submitaddquestions", submitQuestions)
     http.HandleFunc("/addquestions", preSubmitQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);

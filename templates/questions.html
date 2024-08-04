@@ -6,11 +6,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <script src="/static/js/script.js"></script>
-<title>Flashcards Revision - Question</title>
+<title>Flashcards Revision: Question</title>
 </head>
 <body onload="volumeOnLoad()">
-    <img id="volume-icon" src = "/static/images/volume-off.svg" alt="Volume off" title="Volume off" onclick="volume()"/>
-    <img id="exit-icon" src = "/static/images/exit.svg" alt="Exit" title="Exit" onclick="goPlay('/static/audio/exit-beep.mp3', '/')">
+    <img id="volume-icon" src = "/static/images/volume-off-light.png" alt="Volume off" title="Volume off" onclick="volume()"/>
+    <img id="dark-light-icon" src = "/static/images/light-dark-light.png" alt="Toggle Dark Mode" title="Toggle Dark Mode" onclick="toggleDarkMode()">
+    <img id="exit-icon" src = "/static/images/exit-light.png" alt="Exit" title="Exit" onclick="location.href = '/'">
     <div class="flashcard">{{.Flashcard.Question}}</div>
     <div id="card-count" style="display: none;">{{.CardCount}}</div>
     <div id="total-card-count" style="display: none;">{{.StartCardCount}}</div>
