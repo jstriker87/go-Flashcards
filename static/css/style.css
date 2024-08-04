@@ -300,11 +300,20 @@ label {
 
 
 .dark-mode {
-    background-color: black;
-    color: white;
+    background-color: #000000;
+    color:#D6D4D0;
 }
-
 .light-mode {
-    background-color: white;
-    color: black;
+    background-color:#FFFFFF;
+    color: #000000;
+}
+dark-mode table th, .dark-mode table td {
+    background-color: #000000;
+    color:#000000;
+    border: 1px solid white; /* Ensure table cells have visible borders */
+}
+light-mode table th, .light-mode table td {
+    background-color: #FFFFFF;
+    color:#000000;
+    border: 1px solid #000000; /* Ensure table cells have visible borders */
 }

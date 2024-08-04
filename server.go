@@ -156,7 +156,6 @@ func replay (w http.ResponseWriter, r *http.Request) {
 
 func restart(w http.ResponseWriter, r *http.Request) {
     flashcardCountIndex= 0
-    flashcardCount = 0
     flashcards = nil
     gameStarted = false
     http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -164,7 +163,6 @@ func restart(w http.ResponseWriter, r *http.Request) {
 }
 
 func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
-    flashcardCount = 1
     flashcards = []Flashcards{
     }
     flashcardCountIndex=0
@@ -173,9 +171,8 @@ func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
 
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
     if len(flashcards) == 0{
+        gameStarted = false
         http.Redirect(w, r, "/", http.StatusSeeOther)
-
-
     }
         
 
@@ -190,6 +187,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 }
 
 func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
+        flashcardCount = 1 
         flashTemplate:= parseTemplate("addquestions.html")
         data := map[string]int{
             "Flashcard": 0,

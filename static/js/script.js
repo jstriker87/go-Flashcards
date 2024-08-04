@@ -42,8 +42,6 @@ function volume() {
 }
 
 function volumeOnLoad(){
-    console.log(localStorage.getItem("toggleVolume"));
-    console.log(localStorage.getItem("theme"));
     setelementsTheme();
 
     if (localStorage.getItem("toggleVolume") == null) {
@@ -86,7 +84,6 @@ function tts(){
 
 function toggleDarkMode() {
         var element = document.body;
-        console.log("The theme is:" + theme);
         if (theme=='light'){
             localStorage.setItem("theme", "dark");
             element.classList.toggle("dark-mode");
@@ -111,21 +108,18 @@ function setelementsTheme(){
     const flashcarddiv = document.getElementsByClassName("flashcard");
     if (startflashcarddiv.length > 0) {
     if (theme =='light'){
-        console.log("Light theme");
         startflashcarddiv[0].style.backgroundColor = '#ebebfa';
     }
     if (theme =='dark'){
-        console.log("Dark theme");
         startflashcarddiv[0].style.backgroundColor = '#000000';
         }
+    }
     if (flashcarddiv.length > 0) {
         if (theme =='light'){
             flashcarddiv[0].style.backgroundColor = '#ebebfa';
-            console.log("Light theme");
         }
         if (theme =='dark'){
             flashcarddiv[0].style.backgroundColor = '#000000';
            }
         }
     }
-}
