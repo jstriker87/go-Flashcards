@@ -33,7 +33,7 @@ var flashcards = []Flashcards{
 }
 var portAvailable = false
 const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
+func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -69,7 +69,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		flashcards = append(flashcards, flashcard)
     } 
     StartingFlashcardCount = len(flashcards)
-    http.Redirect(w, r, "/", http.StatusSeeOther)
+    http.Redirect(w, r, "/question", http.StatusSeeOther)
 	}
 
 func parseTemplate(filename string) *template.Template {
@@ -186,7 +186,7 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
         }
 }
 
-func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
+func addQuestions(w http.ResponseWriter, r *http.Request) {
         flashcardCount = 1 
         flashTemplate:= parseTemplate("addquestions.html")
         data := map[string]int{
@@ -213,7 +213,7 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 		    flashcards = append(flashcards, flashcard)
         }
         StartingFlashcardCount = len(flashcards)
-        http.Redirect(w, r, "/", http.StatusSeeOther)
+        http.Redirect(w, r, "/question", http.StatusSeeOther)
     }
 }
 
@@ -282,9 +282,9 @@ func main() {
     http.HandleFunc("/replay", replay)
     http.HandleFunc("/restart",restart)
     http.HandleFunc("/submitaddquestions", submitQuestions)
-    http.HandleFunc("/addquestions", preSubmitQuestions);
+    http.HandleFunc("/addquestions", addQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);
-    http.HandleFunc("/submituploadquestions", uploadHandler);
+    http.HandleFunc("/submituploadquestions", submitUploadedQuestions);
     http.HandleFunc("/mainmenu",clearAndGoToMainMenu)
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))

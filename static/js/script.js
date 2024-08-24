@@ -1,6 +1,13 @@
 let theme = localStorage.getItem("theme")
+
+let prefersColourScheme = window.matchMedia('(prefers-color-scheme: light)').matches ? "light" : "dark";
+let overrideColourScheme = localStorage.getItem("overrideColourScheme") 
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",   e => e.matches && toggleDarkMode());
+window.matchMedia("(prefers-color-scheme: light)").addEventListener("change",   e => e.matches && toggleDarkMode());
+
 if (theme == null){
-            localStorage.setItem("theme", "light");
+            localStorage.setItem("theme", prefersColourScheme);
     }
     
 function goPlay(musicurl,redirecturl){
@@ -44,6 +51,7 @@ function volume() {
 function volumeOnLoad(){
     setelementsTheme();
 
+
     if (localStorage.getItem("toggleVolume") == null) {
         localStorage.setItem("toggleVolume", "false");
     }
@@ -65,6 +73,7 @@ function volumeOnLoad(){
         var progressbarval = cardCount / totalCardCount * 100;
         document.getElementById("prog-value").setAttribute("value", progressbarval);
     }
+
 
 }
 
@@ -99,6 +108,13 @@ function toggleDarkMode() {
     }
 
 function setelementsTheme(){
+    if (theme === prefersColourScheme) {
+        theme = prefersColourScheme;
+        localStorage.setItem("overrideColourScheme", "false");
+    } else{ 
+        localStorage.setItem("overrideColourScheme", "true");
+    }
+
     var element = document.body;
     element.classList.toggle(`${theme}-mode`);
     document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
