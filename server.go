@@ -15,9 +15,12 @@ import (
     "os/exec"
     "runtime"
 )
+
 type Flashcards struct {
     Question string
     Answer   string
+    Attempts int
+    Completed bool
 }
 
 //go:embed templates/*.html
@@ -33,6 +36,13 @@ var flashcards = []Flashcards{
 }
 var portAvailable = false
 const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
+
+var resultsSlice[]Flashcards
+
+func createResultsSlice(){
+    resultsSlice = make([]Flashcards, len(flashcards))
+    }
+
 func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -61,14 +71,17 @@ func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
+    
     for i:=0;i<len(lines)-1;i+=2{
         question:=lines[i]
         answer:=lines[i+1]
-        flashcard := Flashcards{Question: question, Answer: answer}
+        attempts:= 0
+        completed:= false
+        flashcard := Flashcards{Question: question, Answer: answer, Attempts: attempts, Completed: completed}
 		flashcards = append(flashcards, flashcard)
     } 
     StartingFlashcardCount = len(flashcards)
+    createResultsSlice()
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 	}
 
@@ -131,6 +144,8 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
+    //copy(resultsSlice, flashcards[flashcardCount:])
+    //fmt.Println(resultsSlice)
     flashcardCount++
     flashcardCountIndex++
     http.Redirect(w, r, "/question", http.StatusSeeOther)
@@ -139,9 +154,12 @@ func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
 
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
+    //copy(resultsSlice, flashcards[flashcardCount:])
+    //fmt.Println(resultsSlice)
     flashcardCount++
     flashcards = append(flashcards[:flashcardCountIndex], flashcards[flashcardCountIndex+1:]...) 
     http.Redirect(w, r, "/question", http.StatusSeeOther)
+
 
 }
 
@@ -214,6 +232,7 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
         }
         StartingFlashcardCount = len(flashcards)
         http.Redirect(w, r, "/question", http.StatusSeeOther)
+        createResultsSlice() 
     }
 }
 
