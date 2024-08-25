@@ -108,6 +108,9 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
         }
         if flashcardCountIndex < len(flashcards){
         flashTemplate := parseTemplate("questions.html")
+        for flashcards[flashcardCountIndex].Completed != false{
+            flashcardCountIndex ++
+        }
         type gameData struct{
             Flashcard Flashcards
             CardCount int
@@ -120,6 +123,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
             CardCount: flashcardCount,
             StartCardCount: StartingFlashcardCount,
         }
+        fmt.Println(theGameData.Flashcard)
         if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
@@ -144,8 +148,6 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
-    //copy(resultsSlice, flashcards[flashcardCount:])
-    //fmt.Println(resultsSlice)
     flashcardCount++
     flashcardCountIndex++
     http.Redirect(w, r, "/question", http.StatusSeeOther)
@@ -154,8 +156,7 @@ func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
 
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
-    //copy(resultsSlice, flashcards[flashcardCount:])
-    //fmt.Println(resultsSlice)
+    flashcards[flashcardCountIndex].Completed = true
     flashcardCount++
     flashcards = append(flashcards[:flashcardCountIndex], flashcards[flashcardCountIndex+1:]...) 
     http.Redirect(w, r, "/question", http.StatusSeeOther)
