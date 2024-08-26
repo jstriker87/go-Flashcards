@@ -34,7 +34,6 @@ var gameStarted = false
 var flashcards = []Flashcards{
 }
 var portAvailable = false
-const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
 
 var resultsSlice[]Flashcards
 
@@ -48,16 +47,12 @@ func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    file, fileHeader, err := r.FormFile("file")
+    file, _, err := r.FormFile("file")
     defer file.Close()
     if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if fileHeader.Size > MAX_UPLOAD_SIZE {
-			http.Error(w, fmt.Sprintf("The uploaded image is too big: %s. Please use an image less than 1MB in size", fileHeader.Filename), http.StatusBadRequest)
-			return
-		}
 
     scanner := bufio.NewScanner(file)
     var lines []string
@@ -106,8 +101,15 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
             gameStarted = true
         }
         if flashcardCountIndex <len(flashcards){
-        for flashcards[flashcardCountIndex].Completed != false{
-            flashcardCountIndex ++
+            fmt.Printf("The flashcard index is %d \n",flashcardCountIndex)
+            fmt.Printf("The flashcard length is %d \n",len(flashcards))
+            for flashcards[flashcardCountIndex].Completed != false{
+                if flashcardCountIndex <len(flashcards) -1 {
+                    fmt.Printf("The skipped flashcard index is %d \n",flashcardCountIndex)
+                    flashcardCountIndex ++
+                    fmt.Printf("The post-skipped flashcard index is %d \n",flashcardCountIndex)
+
+                }
         }
         flashTemplate := parseTemplate("questions.html")
         type gameData struct{
@@ -146,7 +148,9 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
-    flashcardCountIndex++
+    if flashcardCountIndex <len(flashcards){
+        flashcardCountIndex++
+    }
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
@@ -154,14 +158,16 @@ func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
     flashcards[flashcardCountIndex].Completed = true
-    flashcardCountIndex++
+    if flashcardCountIndex <len(flashcards){
+        flashcardCountIndex++
+    }
     http.Redirect(w, r, "/question", http.StatusSeeOther)
     }
 
 
 func replay (w http.ResponseWriter, r *http.Request) {
     flashcardCountIndex=0
-    StartingFlashcardCount = len(flashcards)
+    StartingFlashcardCount = 1
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
@@ -283,7 +289,7 @@ func openServerWebpage(url string) error {
 
 func main() {
     port:= checkPort()
-    fmt.Printf("Starting flashcards at http://localhost:%d",port)
+    fmt.Printf("Starting flashcards at http://localhost:%d \n",port)
     openServerWebpage("http://localhost:" + strconv.Itoa(port))
     staticSubFS, err := fs.Sub(staticFS, "static")
     if err != nil {
