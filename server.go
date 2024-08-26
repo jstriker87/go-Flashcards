@@ -33,9 +33,8 @@ var StartingFlashcardCount = 0
 var gameStarted = false
 var flashcards = []Flashcards{
 }
-var portAvailable = false
-
 var resultsSlice[]Flashcards
+var needRevisionCount = 0
 
 func createResultsSlice(){
     resultsSlice = make([]Flashcards, len(flashcards))
@@ -97,20 +96,24 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
+        fmt.Println(flashcards)
+        fmt.Printf("The needRevisionCount is %d \n",needRevisionCount)
+        var startCardCount = 0
+            if needRevisionCount > 0 {
+                startCardCount = needRevisionCount
+            } else {
+                startCardCount = StartingFlashcardCount
+            }
+        fmt.Printf("The start count is %d",startCardCount)
+        
         if len(flashcards) > 0 {
             gameStarted = true
         }
-        if flashcardCountIndex <len(flashcards){
-            fmt.Printf("The flashcard index is %d \n",flashcardCountIndex)
-            fmt.Printf("The flashcard length is %d \n",len(flashcards))
-            for flashcards[flashcardCountIndex].Completed != false{
-                if flashcardCountIndex <len(flashcards) -1 {
-                    fmt.Printf("The skipped flashcard index is %d \n",flashcardCountIndex)
+        for flashcardCountIndex < len(flashcards) && flashcards[flashcardCountIndex].Completed {
                     flashcardCountIndex ++
-                    fmt.Printf("The post-skipped flashcard index is %d \n",flashcardCountIndex)
-
                 }
-        }
+
+        if flashcardCountIndex < len(flashcards) { 
         flashTemplate := parseTemplate("questions.html")
         type gameData struct{
             Flashcard Flashcards
@@ -122,7 +125,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
     
             Flashcard:  flashcards[flashcardCountIndex],
             CardCount: flashcardCountIndex + 1,
-            StartCardCount: StartingFlashcardCount,
+            StartCardCount: startCardCount,
         }
         if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
@@ -133,6 +136,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
+        fmt.Printf("The Flashcards length is: %d \n",len(flashcards))
         flashTemplate := parseTemplate("index.html")
          type gameData struct{
             FcLength int
@@ -188,7 +192,7 @@ func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
 }
 
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
-    needRevisionCount:=0
+    needRevisionCount = 0 
     for _, item := range flashcards {
         if item.Completed == false{
             needRevisionCount++
@@ -210,6 +214,9 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
 
 func addQuestions(w http.ResponseWriter, r *http.Request) {
         flashTemplate:= parseTemplate("addquestions.html")
+        flashcards = nil
+        gameStarted = false
+        
         data := map[string]int{
             "Flashcard": 0,
         }
@@ -251,6 +258,7 @@ func uploadQuestions(w http.ResponseWriter, r *http.Request) {
     }
 
 func checkPort() int {
+    var portAvailable = false
 	port := 8000
 	portstr := strconv.Itoa(port)
 	var l net.Listener
