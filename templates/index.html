@@ -20,7 +20,7 @@
     {{else}}
     <button type="button" class="start-button" onclick="window.location.href='/addquestions'">Start</button>
     {{end}}
-    {{ if gt .FcLength 0 }}
+    {{ if .GameHasStarted }}
         <button type="button" class="restart-button" onclick="window.location.href='/restart'">Restart</button>
     {{end}}
     </div>
