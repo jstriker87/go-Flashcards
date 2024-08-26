@@ -96,23 +96,18 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
-        fmt.Println(flashcards)
-        fmt.Printf("The needRevisionCount is %d \n",needRevisionCount)
         var startCardCount = 0
             if needRevisionCount > 0 {
                 startCardCount = needRevisionCount
             } else {
                 startCardCount = StartingFlashcardCount
             }
-        fmt.Printf("The start count is %d",startCardCount)
-        
         if len(flashcards) > 0 {
             gameStarted = true
         }
         for flashcardCountIndex < len(flashcards) && flashcards[flashcardCountIndex].Completed {
                     flashcardCountIndex ++
                 }
-
         if flashcardCountIndex < len(flashcards) { 
         flashTemplate := parseTemplate("questions.html")
         type gameData struct{
@@ -136,7 +131,6 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 }
 
 func startFlashcards (w http.ResponseWriter, r *http.Request) {
-        fmt.Printf("The Flashcards length is: %d \n",len(flashcards))
         flashTemplate := parseTemplate("index.html")
          type gameData struct{
             FcLength int
@@ -216,6 +210,7 @@ func addQuestions(w http.ResponseWriter, r *http.Request) {
         flashTemplate:= parseTemplate("addquestions.html")
         flashcards = nil
         gameStarted = false
+        flashcardCountIndex = 0 
         
         data := map[string]int{
             "Flashcard": 0,
