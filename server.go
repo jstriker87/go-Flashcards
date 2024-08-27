@@ -15,9 +15,12 @@ import (
     "os/exec"
     "runtime"
 )
+
 type Flashcards struct {
     Question string
     Answer   string
+    Attempts int
+    Completed bool
 }
 
 //go:embed templates/*.html
@@ -26,29 +29,29 @@ var templatesFS embed.FS
 var staticFS embed.FS
 
 var flashcardCountIndex = 0
-var flashcardCount = 1
 var StartingFlashcardCount = 0
 var gameStarted = false
 var flashcards = []Flashcards{
 }
-var portAvailable = false
-const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
+var resultsSlice[]Flashcards
+var needRevisionCount = 0
+
+func createResultsSlice(){
+    resultsSlice = make([]Flashcards, len(flashcards))
+    }
+
+func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-    file, fileHeader, err := r.FormFile("file")
+    file, _, err := r.FormFile("file")
     defer file.Close()
     if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if fileHeader.Size > MAX_UPLOAD_SIZE {
-			http.Error(w, fmt.Sprintf("The uploaded image is too big: %s. Please use an image less than 1MB in size", fileHeader.Filename), http.StatusBadRequest)
-			return
-		}
 
     scanner := bufio.NewScanner(file)
     var lines []string
@@ -61,15 +64,18 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
+    
     for i:=0;i<len(lines)-1;i+=2{
         question:=lines[i]
         answer:=lines[i+1]
-        flashcard := Flashcards{Question: question, Answer: answer}
+        attempts:= 0
+        completed:= false
+        flashcard := Flashcards{Question: question, Answer: answer, Attempts: attempts, Completed: completed}
 		flashcards = append(flashcards, flashcard)
     } 
     StartingFlashcardCount = len(flashcards)
-    http.Redirect(w, r, "/", http.StatusSeeOther)
+    createResultsSlice()
+    http.Redirect(w, r, "/question", http.StatusSeeOther)
 	}
 
 func parseTemplate(filename string) *template.Template {
@@ -90,10 +96,19 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
+        var startCardCount = 0
+            if needRevisionCount > 0 {
+                startCardCount = needRevisionCount
+            } else {
+                startCardCount = StartingFlashcardCount
+            }
         if len(flashcards) > 0 {
             gameStarted = true
         }
-        if flashcardCountIndex < len(flashcards){
+        for flashcardCountIndex < len(flashcards) && flashcards[flashcardCountIndex].Completed {
+                    flashcardCountIndex ++
+                }
+        if flashcardCountIndex < len(flashcards) { 
         flashTemplate := parseTemplate("questions.html")
         type gameData struct{
             Flashcard Flashcards
@@ -104,8 +119,8 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
         theGameData := gameData{ 
     
             Flashcard:  flashcards[flashcardCountIndex],
-            CardCount: flashcardCount,
-            StartCardCount: StartingFlashcardCount,
+            CardCount: flashcardCountIndex + 1,
+            StartCardCount: startCardCount,
         }
         if err := flashTemplate.Execute(w, theGameData); err != nil {
             log.Println("Error executing template:", err)
@@ -131,25 +146,26 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
-    flashcardCount++
-    flashcardCountIndex++
+    flashcards[flashcardCountIndex].Attempts+=1
+    if flashcardCountIndex <len(flashcards){
+        flashcardCountIndex++
+    }
     http.Redirect(w, r, "/question", http.StatusSeeOther)
-
 }
-
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
-    flashcardCount++
-    flashcards = append(flashcards[:flashcardCountIndex], flashcards[flashcardCountIndex+1:]...) 
+    flashcards[flashcardCountIndex].Attempts+=1
+    flashcards[flashcardCountIndex].Completed = true
+    if flashcardCountIndex <len(flashcards){
+        flashcardCountIndex++
+    }
     http.Redirect(w, r, "/question", http.StatusSeeOther)
-
-}
+    }
 
 
 func replay (w http.ResponseWriter, r *http.Request) {
     flashcardCountIndex=0
-    flashcardCount = 1
-    StartingFlashcardCount = len(flashcards)
+    StartingFlashcardCount = 1
     http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
@@ -170,25 +186,39 @@ func clearAndGoToMainMenu (w http.ResponseWriter, r *http.Request) {
 }
 
 func endFlashcards (w http.ResponseWriter, r *http.Request) {
-    if len(flashcards) == 0{
-        gameStarted = false
-        http.Redirect(w, r, "/", http.StatusSeeOther)
+    needRevisionCount = 0 
+    for _, item := range flashcards {
+        if item.Completed == false{
+            needRevisionCount++
+        }
     }
-        
+    if needRevisionCount == 0{
+        gameStarted = false
+        //http.Redirect(w, r, "/", http.StatusSeeOther)
+    }
+        type gameData struct{
+            AllFlashcards []Flashcards
+            RevisionCount int
 
-        flashTemplate:= parseTemplate("end.html")
-            data := map[string]int{
-            "Flashcard": len(flashcards),
+        }
+        theGameData := gameData{ 
+            RevisionCount: needRevisionCount, 
+            AllFlashcards:  flashcards,
         }
 
-        if err := flashTemplate.Execute(w, data); err != nil {
+        flashTemplate:= parseTemplate("end.html")
+
+        if err := flashTemplate.Execute(w,theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
 }
 
-func preSubmitQuestions(w http.ResponseWriter, r *http.Request) {
-        flashcardCount = 1 
+func addQuestions(w http.ResponseWriter, r *http.Request) {
         flashTemplate:= parseTemplate("addquestions.html")
+        flashcards = nil
+        gameStarted = false
+        flashcardCountIndex = 0 
+        
         data := map[string]int{
             "Flashcard": 0,
         }
@@ -213,7 +243,8 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 		    flashcards = append(flashcards, flashcard)
         }
         StartingFlashcardCount = len(flashcards)
-        http.Redirect(w, r, "/", http.StatusSeeOther)
+        http.Redirect(w, r, "/question", http.StatusSeeOther)
+        createResultsSlice() 
     }
 }
 
@@ -229,6 +260,7 @@ func uploadQuestions(w http.ResponseWriter, r *http.Request) {
     }
 
 func checkPort() int {
+    var portAvailable = false
 	port := 8000
 	portstr := strconv.Itoa(port)
 	var l net.Listener
@@ -267,7 +299,7 @@ func openServerWebpage(url string) error {
 
 func main() {
     port:= checkPort()
-    fmt.Printf("Starting flashcards at http://localhost:%d",port)
+    fmt.Printf("Starting flashcards at http://localhost:%d \n",port)
     openServerWebpage("http://localhost:" + strconv.Itoa(port))
     staticSubFS, err := fs.Sub(staticFS, "static")
     if err != nil {
@@ -282,9 +314,9 @@ func main() {
     http.HandleFunc("/replay", replay)
     http.HandleFunc("/restart",restart)
     http.HandleFunc("/submitaddquestions", submitQuestions)
-    http.HandleFunc("/addquestions", preSubmitQuestions);
+    http.HandleFunc("/addquestions", addQuestions);
     http.HandleFunc("/uploadquestions", uploadQuestions);
-    http.HandleFunc("/submituploadquestions", uploadHandler);
+    http.HandleFunc("/submituploadquestions", submitUploadedQuestions);
     http.HandleFunc("/mainmenu",clearAndGoToMainMenu)
     http.HandleFunc("/end", endFlashcards)
     log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
