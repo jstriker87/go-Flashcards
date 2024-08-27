@@ -146,15 +146,15 @@ func startFlashcards (w http.ResponseWriter, r *http.Request) {
     }
 
 func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
+    flashcards[flashcardCountIndex].Attempts+=1
     if flashcardCountIndex <len(flashcards){
         flashcardCountIndex++
     }
     http.Redirect(w, r, "/question", http.StatusSeeOther)
-
 }
 
-
 func questionOK (w http.ResponseWriter, r *http.Request) {
+    flashcards[flashcardCountIndex].Attempts+=1
     flashcards[flashcardCountIndex].Completed = true
     if flashcardCountIndex <len(flashcards){
         flashcardCountIndex++
@@ -194,14 +194,21 @@ func endFlashcards (w http.ResponseWriter, r *http.Request) {
     }
     if needRevisionCount == 0{
         gameStarted = false
-        http.Redirect(w, r, "/", http.StatusSeeOther)
+        //http.Redirect(w, r, "/", http.StatusSeeOther)
     }
-        flashTemplate:= parseTemplate("end.html")
-            data := map[string]int{
-            "Flashcard": needRevisionCount,
+        type gameData struct{
+            AllFlashcards []Flashcards
+            RevisionCount int
+
+        }
+        theGameData := gameData{ 
+            RevisionCount: needRevisionCount, 
+            AllFlashcards:  flashcards,
         }
 
-        if err := flashTemplate.Execute(w, data); err != nil {
+        flashTemplate:= parseTemplate("end.html")
+
+        if err := flashTemplate.Execute(w,theGameData); err != nil {
             log.Println("Error executing template:", err)
         }
 }
