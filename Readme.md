@@ -1,7 +1,7 @@
 # Flashcard Revision Program
 
 ## Description
-* Flashcard program written in Go that uses a web server
+* A simple web based Flashcard revision program written in Go 
 * The program offers a very simple web Interface that allows users to add questions and then test knowledge
 * After each questions is displayed, and are shown the answer followed by an option to either confirm that your knowledge is ok, or that you need further revision
 * If you select 'ok' then the question is removed from the list of questions
@@ -40,6 +40,9 @@
 ## Authors
 @Jstriker87
 ## Version History
+* 1.3.1
+    * Minor bug fixes to styling
+    * Fixed logic issue with the 'Completed' value that stores the number of tries before the answer is marked as 'good'.
 * 1.3
     * Dark / light mode now follows the users operating systems current light or dark mode
     * Re-factored questions and answers for when questions 'needs revision' so there is a 'completed' value that is set when the user sets the answer to 'OK' and also an 'Attempts' value that counts the number of times that the user has to retry a question before they set  it as 'OK' 
