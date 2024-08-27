@@ -41,6 +41,10 @@
 @Jstriker87
 ## Version History
 * 1.2
+    * Dark / light mode now follows the users operating systems current light or dark mode
+    * Re-factored questions and answers for when questions 'needs revision' so there is a 'completed' value that is set when the user sets the answer to 'OK' and also an 'Attempts' value that counts the number of times that the user has to retry a question before they set  it as 'OK' 
+    * Added a summary at the end of the flashcards once the user has no 'needs revision' questions
+* 1.2
     * Dark mode added
     * Icons updated and configured for light and dark mode
     * The logic for the 'add questions' and 'restart' buttons have been updated so that the 'add questions' button disappears when the user has added questions, which also then makes the 'restart' button visible
