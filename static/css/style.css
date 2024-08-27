@@ -71,7 +71,7 @@ text-align:center;
 .upload-questions-button{
   border: 2px solid #ebebfa;
   border-radius: 12px;
-  position: fixed;
+  position: absolute;
   top: 7%;
   padding: 2px;
   height:30px;
@@ -237,7 +237,7 @@ font-weight: bold;
 
 .questions-answers {
 
-    margin-top: 40px;;
+    margin-top: 150px;;
 
 }
 

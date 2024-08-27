@@ -154,7 +154,9 @@ func questionNeedsRevision (w http.ResponseWriter, r *http.Request) {
 }
 
 func questionOK (w http.ResponseWriter, r *http.Request) {
-    flashcards[flashcardCountIndex].Attempts+=1
+    if (flashcards[flashcardCountIndex].Attempts == 0){
+        flashcards[flashcardCountIndex].Attempts+=1
+    }
     flashcards[flashcardCountIndex].Completed = true
     if flashcardCountIndex <len(flashcards){
         flashcardCountIndex++
