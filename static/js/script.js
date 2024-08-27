@@ -116,10 +116,12 @@ function setelementsTheme(){
     }
 
     var element = document.body;
+    if (window.location.pathname != "/"){
+        document.getElementById('exit-icon').src = `/static/images/exit-${theme}.png`; 
+    }
     element.classList.toggle(`${theme}-mode`);
-    document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
-    document.getElementById('exit-icon').src = `/static/images/exit-${theme}.png`; 
     document.getElementById('dark-light-icon').src = `/static/images/light-dark-${theme}.png`; 
+    document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
     const startflashcarddiv = document.getElementsByClassName("startflashcard");
     const flashcarddiv = document.getElementsByClassName("flashcard");
     if (startflashcarddiv.length > 0) {
