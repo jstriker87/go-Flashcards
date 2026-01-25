@@ -11,9 +11,21 @@
 
 ### Dependencies
 * This program includes executable programs for Linux, Mac & Windows. To run the program it is as simple as double clicking on the program
-* If you are compiling the program from source, Golang version 1.23 is required 
+* If you are compiling the program from source, Golang version 1.22.1 or above is required 
+
 ### Installing
-* Download the executable for the platform of your choice
+* Download the executable program for the platform of your choice
+
+### Running the program
+* Note that the program uses port 8000, however if this port is unavailable the program will check the port try the next port (8001), and continue until it finds a free port.
+* When starting the program, the terminal window will display the port that has been used (e.g http://localhost:8000)
+* For Windows 
+    - Double click on the executable program
+    - You may receive a warning to advise that the firewall needs permission to run the program. If you receive this message then press accept 
+    - A web page will be loaded with the flashcards program
+* For Linux / Mac 
+    - Double click on the executable program
+    - A web page will be loaded with the flashcards program
 
 ### Installing from source
 1. Clone the repository
@@ -26,20 +38,16 @@
     - Linux:
         - GOOS=linux GOARCH=amd64 go build -o build/Flashcards-Linux
 4. The Executable will then be created in the current folder
-### Running the program
-* Note that the program uses port 8000, however if this port is unavailable the program will check the port try the next port (8001), and continue until it finds a free port.
-* When starting the program, the terminal window will display the port that has been used (e.g http://localhost:8000)
-* For Windows 
-    * Double click on the executable program
-    * You may receive a warning to advise that the firewall needs permission to run the program. If you receive this message then press accept 
-    * A web page will be loaded with the flashcards program
-* For Linux / Mac 
-    * Double click on the executable program
-    * A web page will be loaded with the flashcards program
 
 ## Authors
 @Jstriker87
 ## Version History
+* 1.4
+    * Fixed style issues that caused the web pages to display differently depending on the screens resolution
+    * Replaced the 'wrong answer' sound
+    * Updated table styling when adding questions and fixed bug with dark mode that made the headers of the table hard to read in dark mode
+* 1.3
+
 * 1.3.1
     * Minor bug fixes to styling
     * Fixed logic issue with the 'Completed' value that stores the number of tries before the answer is marked as 'good'.
@@ -65,7 +73,7 @@
     * Initial Release
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the GPL 3.0 License.
 
 ## Acknowledgements
 This project uses code licensed from the sources below
