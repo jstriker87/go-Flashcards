@@ -14,7 +14,7 @@
 * If you are compiling the program from source, Golang version 1.22.1 or above is required 
 
 ### Installing
-* Download the executable program for the platform of your choice
+* Download the executable program for the platform of your choice from the [Releases page](https://github.com/jstriker87/go-Flashcards/releases)
 
 ### Running the program
 * Note that the program uses port 8000, however if this port is unavailable the program will check the port try the next port (8001), and continue until it finds a free port.
@@ -46,8 +46,6 @@
     * Fixed style issues that caused the web pages to display differently depending on the screens resolution
     * Replaced the 'wrong answer' sound
     * Updated table styling when adding questions and fixed bug with dark mode that made the headers of the table hard to read in dark mode
-* 1.3
-
 * 1.3.1
     * Minor bug fixes to styling
     * Fixed logic issue with the 'Completed' value that stores the number of tries before the answer is marked as 'good'.
