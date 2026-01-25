@@ -122,11 +122,11 @@ function setelementsTheme(){
     element.classList.toggle(`${theme}-mode`);
     document.getElementById('dark-light-icon').src = `/static/images/light-dark-${theme}.png`; 
     document.getElementById('volume-icon').src = `/static/images/volume-off-${theme}.png`; 
-    const startflashcarddiv = document.getElementsByClassName("startflashcard");
+    const startflashcarddiv = document.getElementsByClassName("start-flashcard");
     const flashcarddiv = document.getElementsByClassName("flashcard");
     if (startflashcarddiv.length > 0) {
     if (theme =='light'){
-        startflashcarddiv[0].style.backgroundColor = '#ebebfa';
+        startflashcarddiv[0].style.backgroundColor = '#0000000';
     }
     if (theme =='dark'){
         startflashcarddiv[0].style.backgroundColor = '#000000';

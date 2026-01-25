@@ -15,18 +15,16 @@
     <img id="volume-icon" src = "/static/images/volume-off-light.png" alt="Volume off" title="Volume off" onclick="volume()"/>
     <img id="dark-light-icon" src = "/static/images/light-dark-light.png" alt="Toggle Dark Mode" title="Toggle Dark Mode" onclick="toggleDarkMode()">
     <img id="exit-icon" src = "/static/images/exit-light.png" alt="Exit" title="Exit" onclick="location.href = '/'">
+
+    <div class="center-container">
     <div class="page-title"> Upload a text file (.txt) file with the questions and answers. Alternatively you can add questions below</div>
     <form action="/uploadquestions" method="POST">
     <br>
-    <button type="submit" class="upload-questions-button">Upload Questions</button>
+    <button type="submit" class="upload-submit-questions-button">Upload Questions</button>
     </form>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+
     <div class="questions-answers" role="region" tabindex="0">
-        <form action="/submitaddquestions" method="POST">
+        <form action="/submitaddquestions" method="POST" class="center-container">
             <table>
                 <thead>
                     <tr>
@@ -118,10 +116,10 @@
 
                 </tbody>
             </table>
-            <br>
-            <br>
-            <button type="submit" class ="submit-questions-button">Submit Questions</button>
+
+            <button type="submit" class ="upload-submit-questions-button">Submit Questions</button>
         </form>
+    </div>
     </div>
 </body>
 </html>

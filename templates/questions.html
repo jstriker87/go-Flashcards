@@ -9,6 +9,8 @@
 <title>Flashcards Revision: Question</title>
 </head>
 <body onload="volumeOnLoad()">
+
+    <div class="center-container">
     <img id="volume-icon" src = "/static/images/volume-off-light.png" alt="Volume off" title="Volume off" onclick="volume()"/>
     <img id="dark-light-icon" src = "/static/images/light-dark-light.png" alt="Toggle Dark Mode" title="Toggle Dark Mode" onclick="toggleDarkMode()">
     <img id="exit-icon" src = "/static/images/exit-light.png" alt="Exit" title="Exit" onclick="location.href = '/'">
@@ -20,6 +22,7 @@
     <progress id="prog-value" max="100"></progress>
     </div>
     <button type="button" class="results-button" onclick="window.location.href='/answer'">See Results</button>
+    </div>
 
 </body>
 </html>
