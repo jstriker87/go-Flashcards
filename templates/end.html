@@ -14,7 +14,7 @@
     <img id="volume-icon" src = "/static/images/volume-off-light.png" alt="Volume off" title="Volume off" onclick="volume()"/>
     <img id="dark-light-icon" src = "/static/images/light-dark-light.png" alt="Toggle Dark Mode" title="Toggle Dark Mode" onclick="toggleDarkMode()">
     <img id="exit-icon" src = "/static/images/exit-light.png" alt="Exit" title="Exit" onclick="location.href = '/'">
-    <div class="startflashcard">
+    <div class="start-flashcard">
     {{ if gt .RevisionCount 0}}
         You have {{.RevisionCount}} question(s) that you were unsure of. Do you want to replay them?
     {{else}}

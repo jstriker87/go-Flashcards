@@ -15,7 +15,18 @@ body {
   margin: 0;
 }
 
+
+
+.center-container th,
+.center-container tr,
+.center-container td {
+  border-radius: 5px;
+}
+
 .flashcard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
@@ -143,8 +154,6 @@ text-align:center;
   border: 2px solid #ebebfa;
   border-radius: 12px;
   padding: 5px;
-  position: fixed;
-  top: 80%;
   height:50px;
   width:250px;
   background-color:#FEA304;
@@ -153,6 +162,7 @@ text-align:center;
 .main-menu-button{
   border: 2px solid #ebebfa;
   border-radius: 12px;
+  margin-top: 5px;
   padding: 5px;
   height:50px;
   width:250px;
@@ -286,13 +296,22 @@ label {
     background-color:#FFFFFF;
     color: #000000;
 }
-dark-mode table th, .dark-mode table td {
+
+.dark-mode table th,
+.dark-mode table td {
     background-color: #000000;
-    color:#000000;
-    border: 1px solid white; /* Ensure table cells have visible borders */
+    color: #D6D4D0;
+    border: 1px solid white; /* To make sure that table cells have visible borders */
 }
-light-mode table th, .light-mode table td {
+
+.dark-mode .center-container th {
+    color: #FFFFFF;
+}
+
+.light-mode table th,
+.light-mode table td {
     background-color: #FFFFFF;
-    color:#000000;
-    border: 1px solid #000000; /* Ensure table cells have visible borders */
+    color: #000000;
+    border: 1px solid #000000;
 }
+
