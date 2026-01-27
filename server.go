@@ -102,7 +102,7 @@ func parseTemplate(filename string) *template.Template {
 // This function shows the answer to the question 
 func showAnswer(w http.ResponseWriter, r *http.Request) {
 
-	// Parse template for the answer
+	// Load and parse the template file end.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 	flashTemplate := parseTemplate("answer.html")
 
 
@@ -118,21 +118,30 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 
 
 func showQuestion(w http.ResponseWriter, r *http.Request) {
-	var startCardCount = 0
-	startCardCount = len(flashcards)
+
+	// Set StartCount to the length of flashcards
+	var startCardCount = len(flashcards)
+	// If the length of flashcards is greater than zero then set the 'gameStarted' variable to true
 	if len(flashcards) > 0 {
 		gameStarted = true
 	}
+	// If the current index of flashcards is less than the length of flashcards and the flashcard has been completed then increment the flashcardCountIndex to skip that flasshcard
 	for flashcardCountIndex < len(flashcards) && flashcards[flashcardCountIndex].Completed {
 		flashcardCountIndex++
 	}
+
+
+	// Load and parse the template file questions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 	if flashcardCountIndex < len(flashcards) {
 		flashTemplate := parseTemplate("questions.html")
+		// Create a struct with the flashcard, the card count (the flashcardCountIndex +1) and the starting CardCount (length of flashcards)
 		type gameData struct {
 			Flashcard      Flashcards
 			CardCount      int
 			StartCardCount int
 		}
+
+		// Create an instance of the struct above and name it 'theGameData'
 		theGameData := gameData{
 
 			Flashcard:      flashcards[flashcardCountIndex],
@@ -140,57 +149,77 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 			StartCardCount: startCardCount,
 		}
 
+		// Execute the templatand check that no errors occurs
 		if err := flashTemplate.Execute(w, theGameData); err != nil {
 			log.Println("Error executing template:", err)
 		}
+
+	// If there are no flashcards (i.e. the length of flashcards is zero), redirect the user to the end page
 	} else {
 		http.Redirect(w, r, "/end", http.StatusSeeOther)
 	}
 }
 
+// This function is for the homepage index.html 
+
 func startFlashcards(w http.ResponseWriter, r *http.Request) {
+
+	// Load and parse the template file questions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 	flashTemplate := parseTemplate("index.html")
-	type gameData struct {
-		FcLength       int
-		GameHasStarted bool
-	}
-	theGameData := gameData{
-		FcLength:       len(flashcards),
-		GameHasStarted: gameStarted,
-	}
-	if err := flashTemplate.Execute(w, theGameData); err != nil {
+
+	// Execute the template with no data (as the variables needed are already global)
+	if err := flashTemplate.Execute(w, nil); err != nil {
 		log.Println("Error executing template:", err)
 	}
 }
 
+
+// This function is used for when the user selects that a question 'needs revision'
 func questionNeedsRevision(w http.ResponseWriter, r *http.Request) {
+	// Add one to the 'Attempts' value of the current flashcard 
 	flashcards[flashcardCountIndex].Attempts += 1
+	// If the flashcardCountIndex is less than the length of flashcards array then increment the flashcardCountIndex by one (i.e. Go to the next flashcard)
 	if flashcardCountIndex < len(flashcards) {
 		flashcardCountIndex++
 	}
+	// Re-direct the user back to the 'question' page to load the next question
 	http.Redirect(w, r, "/question", http.StatusSeeOther)
 }
 
+
+// This function is used for when the user selects that a question is 'ok'
 func questionOK(w http.ResponseWriter, r *http.Request) {
 
+	// Add one to the 'Attempts' value of the current flashcard 
 	flashcards[flashcardCountIndex].Attempts += 1
+	// Set the 'Completed' value of the current flashcard to true
 	flashcards[flashcardCountIndex].Completed = true
+
+	// If the flashcardCountIndex is less than the length of flashcards array then increment the flashcardCountIndex by one (i.e. Go to the next flashcard)
 	if flashcardCountIndex < len(flashcards) {
 		flashcardCountIndex++
 	}
+
+	// Re-direct the user back to the 'question' page to load the next question
 	http.Redirect(w, r, "/question", http.StatusSeeOther)
 }
 
+
+// This function is used when the user has one or more questions that were marked as 'needs revision' and the user presses the 'replay' button to go through them again
 func replay(w http.ResponseWriter, r *http.Request) {
 
-
+	// Iterate over each flashcard
 	for i := len(flashcards) - 1; i >= 0; i-- {
+		// If the current flashcards 'Completed' value is true
+		// Add the flashcard to the 'doneFlashcards' array of Flashcards
+		// Then remove that flashcard from the 'flashcards' array of flashcards
 		if flashcards[i].Completed {
 			doneFlashcards = append(doneFlashcards, flashcards[i])
 			flashcards = append(flashcards[:i], flashcards[i+1:]...)
 		}
 	}
 
+	// Set the current index of the flashcard being processed back to zero
 	flashcardCountIndex = 0
 	StartingFlashcardCount = 1
 	http.Redirect(w, r, "/question", http.StatusSeeOther)
@@ -207,6 +236,7 @@ func restart(w http.ResponseWriter, r *http.Request) {
 
 func clearAndGoToMainMenu(w http.ResponseWriter, r *http.Request) {
 	flashcards = []Flashcards{}
+	doneFlashcards =  []Flashcards{}
 	flashcardCountIndex = 0
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
