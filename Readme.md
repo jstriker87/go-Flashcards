@@ -32,21 +32,26 @@
 2. Navigate to the repository's  directory
 3. Depending on your operating system type the command below
     - Windows:
-        - GOOS=windows GOARCH=amd64 go build -o build/Flashcards.exe
+        - GOOS=windows GOARCH=amd64 go build -o build/go-Flashcards-Windows.exe
     - Intel Mac:
-        - GOOS=darwin GOARCH=amd64 go build -o build/Flashcards-Mac
+        - GOOS=darwin GOARCH=amd64 go build -o build/go-Flashcards-Mac
     - Apple Silicon Mac:
-        - GOOS=darwin GOARCH=arm64 go build -o build/Flashcards-Mac-ARM
+        - GOOS=darwin GOARCH=arm64 go build -o build/go-Flashcards-Mac-ARM
     - x86_64 Linux:
-        - GOOS=linux GOARCH=amd64 go build -o build/Flashcards-Linux
+        - GOOS=linux GOARCH=amd64 go build -o build/go-Flashcards-Linux
     - ARM64 Linux (modern ARM servers, Raspberry Pi's that are 64-bit) :
-        - GOOS=linux GOARCH=arm64 go build -o build/Flashcards-Linux-arm64
-        - 
-4. The Executable will then be created in the current folder
+        - GOOS=linux GOARCH=arm64 go build -o build/go-Flashcards-Linux-arm64
+4. The Executable will then be created in the 'build' folder
 
 ## Authors
 @Jstriker87
 ## Version History
+* 1.4.1
+    * Fixed issue with the 'end' page where the summary would extend around the box that held the summary.
+    * Fixed bug in logic when a user manually entered questions and answers which caused the 20th question and answer not be processed
+    * Added comments to server code
+    * Executable names have been renamed to 'go-Flashcard-<operating system>'
+
 * 1.4
     * Fixed style issues that caused the web pages to display differently depending on the screens resolution
     * Replaced the 'wrong answer' sound
