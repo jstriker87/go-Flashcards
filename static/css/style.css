@@ -42,7 +42,7 @@ body {
   border-radius: 12px;
   padding: 5px;
   margin-top: 50px;
-  height:250px;
+  min-height:250px;
   width:450px;
   background-color:#ebebfa;
   font-weight: 500;
