@@ -16,6 +16,9 @@ import (
 	"strings"
 )
 
+
+
+// Flashcards struct. This is used as the key structure for each flashcard
 type Flashcards struct {
 	Question  string
 	Answer    string
@@ -29,8 +32,10 @@ var templatesFS embed.FS
 //go:embed static
 var staticFS embed.FS
 
+
+// Set the index of of which flashcard is being used to zero
 var flashcardCountIndex = 0
-var StartingFlashcardCount = 0
+// Set 'gameStarted' to false to indicate that a game has not yet begun
 var gameStarted = false
 
 // Stores all initial flashcards
@@ -43,7 +48,7 @@ var doneFlashcards = []Flashcards{}
 var needRevisionCount = 0
 
 
-// This function is used when the user uploads questions using the upload file pagee
+// This function is used when the user uploads questions using the upload file page
 func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 	// Check that the request type is POST
 	if r.Method != "POST" {
@@ -86,8 +91,7 @@ func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 		// Append the flashcard to the flashcards array 
 		flashcards = append(flashcards, flashcard)
 	}
-	// Set 'StartingFlashcardCount' to the length of the flashcards
-	StartingFlashcardCount = len(flashcards)
+
 	// Once complete re-direct the user to the 'question' page to start the user working on the flashcards
 	http.Redirect(w, r, "/question", http.StatusSeeOther)
 }
@@ -221,149 +225,222 @@ func replay(w http.ResponseWriter, r *http.Request) {
 
 	// Set the current index of the flashcard being processed back to zero
 	flashcardCountIndex = 0
-	StartingFlashcardCount = 1
+
+	// Re-direct the user back to the 'question' page to load the next question
 	http.Redirect(w, r, "/question", http.StatusSeeOther)
 
 }
 
+// This function is used when restarting the game to reset variables 
 func restart(w http.ResponseWriter, r *http.Request) {
+	// Set flashcardCountIndex back to zero
 	flashcardCountIndex = 0
+	// Set flashcards back to nil
 	flashcards = nil
+	// Set 'gameStarted' back to false
 	gameStarted = false
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
 
+// This function is used when a game has been fully completed and the user starts a new game
 func clearAndGoToMainMenu(w http.ResponseWriter, r *http.Request) {
+	// Set the 'flashcards' and 'doneFlashcards' array back to empty
 	flashcards = []Flashcards{}
 	doneFlashcards =  []Flashcards{}
+	// Set 'flashcardCountIndex' back to zero so any new round will start at the beginning
 	flashcardCountIndex = 0
+	// Re-redirect the user to the root page (which calls the startFlashcards function)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+
+// This function is for when a user completes a round
 func endFlashcards(w http.ResponseWriter, r *http.Request) {
+	// Initially set 'needRevisionCount' (the number of flashcards that need to be reviewed) to zero
 	needRevisionCount = 0
 
+	// Create a struct to store the flashcards array and 'RevisionCount' (the number of flashcards that need revision)
 	type gameData struct {
 		AllFlashcards []Flashcards
 		RevisionCount int
 	}
+
+	// Iterate over each flashcard. If the 'Completed' status of the flashcard is false then increment the 'needRevisionCount' value by one
 	for _, item := range flashcards {
 		if item.Completed == false {
 			needRevisionCount++
 		}
 	}
 
+	// If 'needRevisionCount' is zero (i.e. there are no flashcards that needs revision) then combine the 'flashcards' and 'doneFlashcards' into the 'flashcards' array
+	// This is so that the final statistics page that displays each question and answer, and the number of attempts taken to answer the question, contains all the questions and answers, not just the ones that needed revision
 	if needRevisionCount == 0 {
 
 		flashcards = append(flashcards, doneFlashcards...)
 		gameStarted = false
 
 	}
+
+	// Create an instance of the 'gameData' struct named 'theGameData' with the data
 	theGameData := gameData{
 		RevisionCount: needRevisionCount,
 		AllFlashcards: flashcards,
 	}
 
+
+	// Load and parse the template file end.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
+
 	flashTemplate := parseTemplate("end.html")
+
+	// Execute the template using 'gameData'
 
 	if err := flashTemplate.Execute(w, theGameData); err != nil {
 		log.Println("Error executing template:", err)
 	}
 }
 
+//  This function is used to set-up the process to add questions
 func addQuestions(w http.ResponseWriter, r *http.Request) {
+
+	// Load and parse the template file addquestions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 	flashTemplate := parseTemplate("addquestions.html")
+	// Set main variables used in game logic to their initial values
 	flashcards = nil
 	gameStarted = false
 	flashcardCountIndex = 0
 
-	data := map[string]int{
-		"Flashcard": 0,
-	}
-	if err := flashTemplate.Execute(w, data); err != nil {
+	// Execute the template with no data
+	if err := flashTemplate.Execute(w, nil); err != nil {
 		log.Println("Error executing template:", err)
 	}
 }
 
+
+
+// This function is used for processing questions and answers when adding them manually on the 'addquestions' page (not when uploading a text file)
+
 func submitQuestions(w http.ResponseWriter, r *http.Request) {
+
+	// Check that the method used is GET and if so load and parse the template file 'addquestions".html and execute it (In effect this reloads the page)
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("addquestions.html")
 		t.Execute(w, nil)
+	// IF the method is not GET (i.e. the method is POST)
 	} else {
+		// Parse the form
 		r.ParseForm()
-		for i := 1; i < 10; i++ {
+		// Iterate over the questions (the maximum provided questions and answers is 20)
+
+		for i := 1; i < 21; i++ {
+			// Get each question and answer by checking the value along with the number of questions and answers
 			question := r.FormValue("question" + strconv.Itoa(i))
 			answer := r.FormValue("answer" + strconv.Itoa(i))
+
+			// If either the question or answer is empty then skip it
 			if question == "" || answer == "" {
 				continue
 			}
+			// Create a new flashcard with the question and answer of that item
 			flashcard := Flashcards{Question: question, Answer: answer}
+			// Add the flashcard to the 'flashcards' array
 			flashcards = append(flashcards, flashcard)
 		}
-		StartingFlashcardCount = len(flashcards)
+		// Re-direct the user to the 'questions' page
 		http.Redirect(w, r, "/question", http.StatusSeeOther)
 	}
 }
 
+
+// This function is used for preparing to uploading questions
 func uploadQuestions(w http.ResponseWriter, r *http.Request) {
+	// Set the content type to header text/html as the user will be providing a text file for the questions and answers
 	w.Header().Add("Content-Type", "text/html")
+	// Load and parse the template file uploaduestions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 	flashTemplate := parseTemplate("uploadquestions.html")
-	data := map[string]int{
-		"Flashcard": 0,
-	}
-	if err := flashTemplate.Execute(w, data); err != nil {
+	if err := flashTemplate.Execute(w, nil); err != nil {
 		log.Println("Error executing template:", err)
 	}
 }
 
+
+// This function is used to check what port the program should use. The default port is 8000, but if it is not available it increments the port number by one until it finds one that is available
 func checkPort() int {
 	var portAvailable = false
 	port := 8000
 	portstr := strconv.Itoa(port)
+	// Create a new listener to check ports 
 	var l net.Listener
 	var err error
+	// Check current number number to see if it is free
 	for portAvailable != true {
 		l, err = net.Listen("tcp", ":"+portstr)
 		if err != nil {
 			fmt.Printf("Error: %s\n", err)
+			// If the error contains 'in use' the port is not available so increase the port number by one
 			if strings.Contains(err.Error(), "in use") {
 				port += 1
 				portstr = strconv.Itoa(port)
 			}
+		// Once a port is found to be free set 'portAvailable' to true to stop the search for  a free port
 		} else {
 			portAvailable = true
 		}
 	}
+	// Defer the closing of the listener so it doesn't stop prematurely
 	defer l.Close()
+	// Return the found port number
 	return port
 }
 
+// The function is used to automatically open the web page for the flashcards 
 func openServerWebpage(url string) error {
+	// Set empty cmd string and create a string array calls 'args'
 	var cmd string
 	var args []string
+	// runtime.GOOS is the architecture of the system
 	switch runtime.GOOS {
+	// If the user is using Windows 
 	case "windows":
 		cmd = "cmd"
 		args = []string{"/c", "start"}
+	// If the user is using Mac
 	case "darwin":
 		cmd = "open"
+	// If the user is using linux
 	default: // "linux", "freebsd", "openbsd", "netbsd"
 		cmd = "xdg-open"
 	}
+	// Add the url to args
 	args = append(args, url)
+	// Return an execution command to open the browser with the flashcards url
 	return exec.Command(cmd, args...).Start()
 }
 
+
+// The 'main' function is run a program launch
 func main() {
+	// Get the available port
 	port := checkPort()
 	fmt.Printf("Starting flashcards at http://localhost:%d \n", port)
+	// Open the flashcards web page
 	openServerWebpage("http://localhost:" + strconv.Itoa(port))
+	// Create a sub-filesystem in the 'static directory' inside staticFS (the file system that you start from
+	//This means that when the program runs it makes the 'static' folder the root of the program
 	staticSubFS, err := fs.Sub(staticFS, "static")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// For the http.Handle line below
+		//Registers the handler for all URLs starting with /static/ but removes the 'static' from any url as we are already serving the file server from the 'static' directory
+		// Create a file server that serves files from the 'staticSubFS' directory (the 'static' directory)
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticSubFS))))
+
+
+	// Below is a list of paths that the user can go to and which function it calls. Each function is one in this server, and relates to one or more page. These pages are called from the 
+	// html files in this program in the 'templates' folder
 	http.HandleFunc("/", startFlashcards)
 	http.HandleFunc("/question", showQuestion)
 	http.HandleFunc("/needsRevision", questionNeedsRevision)
@@ -377,5 +454,6 @@ func main() {
 	http.HandleFunc("/submituploadquestions", submitUploadedQuestions)
 	http.HandleFunc("/mainmenu", clearAndGoToMainMenu)
 	http.HandleFunc("/end", endFlashcards)
+	// Start a web server using the available port
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
