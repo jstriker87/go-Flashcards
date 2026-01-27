@@ -33,10 +33,15 @@
 3. Depending on your operating system type the command below
     - Windows:
         - GOOS=windows GOARCH=amd64 go build -o build/Flashcards.exe
-    - Mac:
+    - Intel Mac:
         - GOOS=darwin GOARCH=amd64 go build -o build/Flashcards-Mac
-    - Linux:
+    - Apple Silicon Mac:
+        - GOOS=darwin GOARCH=arm64 go build -o build/Flashcards-Mac-ARM
+    - x86_64 Linux:
         - GOOS=linux GOARCH=amd64 go build -o build/Flashcards-Linux
+    - ARM64 Linux (modern ARM servers, Raspberry Pi's that are 64-bit) :
+        - GOOS=linux GOARCH=arm64 go build -o build/Flashcards-Linux-arm64
+        - 
 4. The Executable will then be created in the current folder
 
 ## Authors
