@@ -2,7 +2,7 @@ name: Build Go Android Library
 
 on:
   push:
-    branches: [adr]
+    branches: [jstriker87-patch-1]
   pull_request:
 
 jobs:
