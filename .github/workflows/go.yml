@@ -1,0 +1,34 @@
+name: Build Go Android Library
+
+on:
+  push:
+    branches: [adr]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'  # your Go version
+
+    - name: Install gomobile
+      run: |
+        go install golang.org/x/mobile/cmd/gomobile@latest
+        gomobile init
+
+    - name: Build Android .aar
+      run: |
+        gomobile bind -target=android -o MyLibrary.aar ./path/to/your/package
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: MyLibrary.aar
+        path: MyLibrary.aar
