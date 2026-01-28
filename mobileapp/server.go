@@ -1,4 +1,4 @@
-package main
+package mobileapp
 
 import (
 	"bufio"
@@ -49,7 +49,7 @@ var needRevisionCount = 0
 
 
 // This function is used when the user uploads questions using the upload file page
-func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
+func SubmitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 	// Check that the request type is POST
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -98,16 +98,16 @@ func submitUploadedQuestions(w http.ResponseWriter, r *http.Request) {
 
 
 // Helper to help process each template. Accepts the filename as an input and returns a pointer to a 'Template' with the desired filename in the 'templates' folder
-func parseTemplate(filename string) *template.Template {
+func ParseTemplate(filename string) *template.Template {
 	return template.Must(template.ParseFS(templatesFS, "templates/"+filename))
 }
 
 
 // This function shows the answer to the question 
-func showAnswer(w http.ResponseWriter, r *http.Request) {
+func ShowAnswer(w http.ResponseWriter, r *http.Request) {
 
 	// Load and parse the template file end.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
-	flashTemplate := parseTemplate("answer.html")
+	flashTemplate := ParseTemplate("answer.html")
 
 
 	// Create a map using the current 'flashcardCountIndex' to be used to show the answer
@@ -121,7 +121,7 @@ func showAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func showQuestion(w http.ResponseWriter, r *http.Request) {
+func ShowQuestion(w http.ResponseWriter, r *http.Request) {
 
 	// Set StartCount to the length of flashcards
 	var startCardCount = len(flashcards)
@@ -137,7 +137,7 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 
 	// Load and parse the template file questions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 	if flashcardCountIndex < len(flashcards) {
-		flashTemplate := parseTemplate("questions.html")
+		flashTemplate := ParseTemplate("questions.html")
 		// Create a struct with the flashcard, the card count (the flashcardCountIndex +1) and the starting CardCount (length of flashcards)
 		type gameData struct {
 			Flashcard      Flashcards
@@ -166,10 +166,10 @@ func showQuestion(w http.ResponseWriter, r *http.Request) {
 
 // This function is for the homepage index.html 
 
-func startFlashcards(w http.ResponseWriter, r *http.Request) {
+func StartFlashcards(w http.ResponseWriter, r *http.Request) {
 
 	// Load and parse the template file questions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
-	flashTemplate := parseTemplate("index.html")
+	flashTemplate := ParseTemplate("index.html")
 
 	// Execute the template with no data (as the variables needed are already global)
 	if err := flashTemplate.Execute(w, nil); err != nil {
@@ -179,7 +179,7 @@ func startFlashcards(w http.ResponseWriter, r *http.Request) {
 
 
 // This function is used for when the user selects that a question 'needs revision'
-func questionNeedsRevision(w http.ResponseWriter, r *http.Request) {
+func QuestionNeedsRevision(w http.ResponseWriter, r *http.Request) {
 	// Add one to the 'Attempts' value of the current flashcard 
 	flashcards[flashcardCountIndex].Attempts += 1
 	// If the flashcardCountIndex is less than the length of flashcards array then increment the flashcardCountIndex by one (i.e. Go to the next flashcard)
@@ -192,7 +192,7 @@ func questionNeedsRevision(w http.ResponseWriter, r *http.Request) {
 
 
 // This function is used for when the user selects that a question is 'ok'
-func questionOK(w http.ResponseWriter, r *http.Request) {
+func QuestionOK(w http.ResponseWriter, r *http.Request) {
 
 	// Add one to the 'Attempts' value of the current flashcard 
 	flashcards[flashcardCountIndex].Attempts += 1
@@ -210,7 +210,7 @@ func questionOK(w http.ResponseWriter, r *http.Request) {
 
 
 // This function is used when the user has one or more questions that were marked as 'needs revision' and the user presses the 'replay' button to go through them again
-func replay(w http.ResponseWriter, r *http.Request) {
+func Replay(w http.ResponseWriter, r *http.Request) {
 
 	// Iterate over each flashcard
 	for i := len(flashcards) - 1; i >= 0; i-- {
@@ -232,7 +232,7 @@ func replay(w http.ResponseWriter, r *http.Request) {
 }
 
 // This function is used when restarting the game to reset variables 
-func restart(w http.ResponseWriter, r *http.Request) {
+func Restart(w http.ResponseWriter, r *http.Request) {
 	// Set flashcardCountIndex back to zero
 	flashcardCountIndex = 0
 	// Set flashcards back to nil
@@ -244,7 +244,7 @@ func restart(w http.ResponseWriter, r *http.Request) {
 }
 
 // This function is used when a game has been fully completed and the user starts a new game
-func clearAndGoToMainMenu(w http.ResponseWriter, r *http.Request) {
+func ClearAndGoToMainMenu(w http.ResponseWriter, r *http.Request) {
 	// Set the 'flashcards' and 'doneFlashcards' array back to empty
 	flashcards = []Flashcards{}
 	doneFlashcards =  []Flashcards{}
@@ -256,7 +256,7 @@ func clearAndGoToMainMenu(w http.ResponseWriter, r *http.Request) {
 
 
 // This function is for when a user completes a round
-func endFlashcards(w http.ResponseWriter, r *http.Request) {
+func EndFlashcards(w http.ResponseWriter, r *http.Request) {
 	// Initially set 'needRevisionCount' (the number of flashcards that need to be reviewed) to zero
 	needRevisionCount = 0
 
@@ -291,7 +291,7 @@ func endFlashcards(w http.ResponseWriter, r *http.Request) {
 
 	// Load and parse the template file end.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
 
-	flashTemplate := parseTemplate("end.html")
+	flashTemplate := ParseTemplate("end.html")
 
 	// Execute the template using 'gameData'
 
@@ -301,10 +301,10 @@ func endFlashcards(w http.ResponseWriter, r *http.Request) {
 }
 
 //  This function is used to set-up the process to add questions
-func addQuestions(w http.ResponseWriter, r *http.Request) {
+func AddQuestions(w http.ResponseWriter, r *http.Request) {
 
 	// Load and parse the template file addquestions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
-	flashTemplate := parseTemplate("addquestions.html")
+	flashTemplate := ParseTemplate("addquestions.html")
 	// Set main variables used in game logic to their initial values
 	flashcards = nil
 	gameStarted = false
@@ -320,7 +320,7 @@ func addQuestions(w http.ResponseWriter, r *http.Request) {
 
 // This function is used for processing questions and answers when adding them manually on the 'addquestions' page (not when uploading a text file)
 
-func submitQuestions(w http.ResponseWriter, r *http.Request) {
+func SubmitQuestions(w http.ResponseWriter, r *http.Request) {
 
 	// Check that the method used is GET and if so load and parse the template file 'addquestions".html and execute it (In effect this reloads the page)
 	if r.Method == "GET" {
@@ -353,11 +353,11 @@ func submitQuestions(w http.ResponseWriter, r *http.Request) {
 
 
 // This function is used for preparing to uploading questions
-func uploadQuestions(w http.ResponseWriter, r *http.Request) {
+func UploadQuestions(w http.ResponseWriter, r *http.Request) {
 	// Set the content type to header text/html as the user will be providing a text file for the questions and answers
 	w.Header().Add("Content-Type", "text/html")
 	// Load and parse the template file uploaduestions.html, convert it to a template object, and store it in flashTemplate so I can execute it later”
-	flashTemplate := parseTemplate("uploadquestions.html")
+	flashTemplate := ParseTemplate("uploadquestions.html")
 	if err := flashTemplate.Execute(w, nil); err != nil {
 		log.Println("Error executing template:", err)
 	}
@@ -365,7 +365,7 @@ func uploadQuestions(w http.ResponseWriter, r *http.Request) {
 
 
 // This function is used to check what port the program should use. The default port is 8000, but if it is not available it increments the port number by one until it finds one that is available
-func checkPort() int {
+func CheckPort() int {
 	var portAvailable = false
 	port := 8000
 	portstr := strconv.Itoa(port)
@@ -394,7 +394,7 @@ func checkPort() int {
 }
 
 // The function is used to automatically open the web page for the flashcards 
-func openServerWebpage(url string) error {
+func OpenServerWebpage(url string) error {
 	// Set empty cmd string and create a string array calls 'args'
 	var cmd string
 	var args []string
@@ -418,13 +418,14 @@ func openServerWebpage(url string) error {
 }
 
 
-// The 'main' function is run a program launch
-func main() {
+// The main function is run a program launch
+
+func StartFlashcardsServer() {
 	// Get the available port
-	port := checkPort()
+	port := CheckPort()
 	fmt.Printf("Starting flashcards at http://localhost:%d \n", port)
 	// Open the flashcards web page
-	openServerWebpage("http://localhost:" + strconv.Itoa(port))
+	OpenServerWebpage("http://localhost:" + strconv.Itoa(port))
 	// Create a sub-filesystem in the 'static directory' inside staticFS (the file system that you start from
 	//This means that when the program runs it makes the 'static' folder the root of the program
 	staticSubFS, err := fs.Sub(staticFS, "static")
@@ -441,19 +442,20 @@ func main() {
 
 	// Below is a list of paths that the user can go to and which function it calls. Each function is one in this server, and relates to one or more page. These pages are called from the 
 	// html files in this program in the 'templates' folder
-	http.HandleFunc("/", startFlashcards)
-	http.HandleFunc("/question", showQuestion)
-	http.HandleFunc("/needsRevision", questionNeedsRevision)
-	http.HandleFunc("/ok", questionOK)
-	http.HandleFunc("/answer", showAnswer)
-	http.HandleFunc("/replay", replay)
-	http.HandleFunc("/restart", restart)
-	http.HandleFunc("/submitaddquestions", submitQuestions)
-	http.HandleFunc("/addquestions", addQuestions)
-	http.HandleFunc("/uploadquestions", uploadQuestions)
-	http.HandleFunc("/submituploadquestions", submitUploadedQuestions)
-	http.HandleFunc("/mainmenu", clearAndGoToMainMenu)
-	http.HandleFunc("/end", endFlashcards)
+	http.HandleFunc("/", StartFlashcards)
+	http.HandleFunc("/question", ShowQuestion)
+	http.HandleFunc("/needsRevision", QuestionNeedsRevision)
+	http.HandleFunc("/ok", QuestionOK)
+	http.HandleFunc("/answer", ShowAnswer)
+	http.HandleFunc("/replay", Replay)
+	http.HandleFunc("/restart", Restart)
+	http.HandleFunc("/submitaddquestions", SubmitQuestions)
+	http.HandleFunc("/addquestions", AddQuestions)
+	http.HandleFunc("/uploadquestions", UploadQuestions)
+	http.HandleFunc("/submituploadquestions", SubmitUploadedQuestions)
+	http.HandleFunc("/mainmenu", ClearAndGoToMainMenu)
+	http.HandleFunc("/end", EndFlashcards)
 	// Start a web server using the available port
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), nil))
 }
+

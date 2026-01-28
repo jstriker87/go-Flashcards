@@ -20,12 +20,13 @@ jobs:
 
     - name: Install gomobile
       run: |
+
         go install golang.org/x/mobile/cmd/gomobile@latest
         gomobile init
 
     - name: Build Android .aar
       run: |
-        gomobile bind -target=android
+        gomobile bind -target=android -androidapi 21 -o Flashcards.aar ./path/to/your/package
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
