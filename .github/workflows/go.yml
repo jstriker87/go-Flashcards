@@ -25,10 +25,10 @@ jobs:
 
     - name: Build Android .aar
       run: |
-        gomobile bind -target=android -o MyLibrary.aar ./path/to/your/package
+        gomobile bind -target=android
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: MyLibrary.aar
-        path: MyLibrary.aar
+        name: Flashcards.aar
+        path: Flashcards.aar
